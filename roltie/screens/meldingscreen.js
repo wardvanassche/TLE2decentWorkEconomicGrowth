@@ -14,7 +14,7 @@ export default function MeldingScreen() {
 
                 <TouchableOpacity style={styles.button} onPress={() => {
                 }}>
-                    <Text style={styles.buttonText}>Roltie</Text>
+                    <Text style={styles.buttonText}>Roltie?</Text>
                 </TouchableOpacity>
             </View>
         </View>

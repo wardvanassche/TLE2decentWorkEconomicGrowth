@@ -31,9 +31,10 @@ export default function Dropdown() {
                         Option 3
                     </li>
                 </ul>
-            )}
-        </div>
     )
+}
+</div>
+)
 }
 
 const styles = StyleSheet.create({
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
         border: '1px solid #00C720',
         borderRadius: '5px',
         width: '100%',
-        padding: '25px',
+        padding: '10px',
     },
     menu: {
         display: 'block',
@@ -66,9 +67,9 @@ const styles = StyleSheet.create({
         borderRadius: '5px',
     },
     item: {
-        padding: '10px 20px',
         cursor: 'pointer',
         color: 'grey',
+        padding: '10px',
     },
     itemHover: {
         backgroundColor: '#00C720',
