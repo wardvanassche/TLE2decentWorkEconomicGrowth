@@ -4,7 +4,7 @@ import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'reac
 export default function HomeScreen() {
     return (
         <View style={styles.container}>
-            <Image source={require('./assets/logo.png')} style={styles.logo} />
+            <Image source={require('../assets/logo.png')} style={styles.logo} />
             <View style={styles.rectangle}>
                 <TextInput placeholder="Van" style={styles.input} />
                 <TextInput placeholder="Naar" style={styles.input} />
