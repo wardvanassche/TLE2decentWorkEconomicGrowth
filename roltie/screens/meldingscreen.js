@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import {View, Text, TextInput, StyleSheet, Image, TouchableOpacity} from "react-native";
-import Dropdown from "./components/dropdown";
+import React from 'react';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from "react-native";
+import Dropdown from "./components/dropdown/dropdown";
 
 export default function MeldingScreen() {
 
