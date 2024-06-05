@@ -1,21 +1,54 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, Alert } from 'react-native';
+// App.js
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Button, Alert, Picker } from 'react-native';
 import * as SQLite from 'expo-sqlite';
+import * as FileSystem from 'expo-file-system';
+import * as Brain from 'brain.js';
 
+// Open SQLite database
 const db = SQLite.openDatabase('feedback.db');
+
+// Create the feedback table if it doesn't exist
+db.transaction(tx => {
+    tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS Roltrappen (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      escalator_id INTEGER,
+      status TEXT,
+      timestamp TEXT
+    );`
+    );
+});
 
 export default function TijdelijkeMeldingen() {
     const [status, setStatus] = useState(null);
+    const [escalatorId, setEscalatorId] = useState('1');
+    const [prediction, setPrediction] = useState(null);
+    const [models, setModels] = useState({});
 
-    db.transaction(tx => {
-        tx.executeSql(
-            `CREATE TABLE IF NOT EXISTS feedback (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        status TEXT,
-        timestamp TEXT
-      );`
-        );
-    });
+    useEffect(() => {
+        // Load the trained models
+        const loadModels = async () => {
+            const escalatorIds = ['1', '2']; // Add more escalator IDs as needed
+            const loadedModels = {};
+
+            for (const id of escalatorIds) {
+                try {
+                    const modelJson = await FileSystem.readAsStringAsync(
+                        FileSystem.documentDirectory + `model_${id}.json`
+                    );
+                    const model = JSON.parse(modelJson);
+                    loadedModels[id] = new Brain.NeuralNetwork().fromJSON(model);
+                } catch (error) {
+                    console.error(`Error loading model for escalator ${id}:`, error);
+                }
+            }
+
+            setModels(loadedModels);
+        };
+
+        loadModels();
+    }, []);
 
     const submitFeedback = (status) => {
         setStatus(status);
@@ -23,8 +56,8 @@ export default function TijdelijkeMeldingen() {
 
         db.transaction(tx => {
             tx.executeSql(
-                'INSERT INTO feedback (status, timestamp) VALUES (?, ?)',
-                [status, timestamp],
+                'INSERT INTO Roltrappen (escalator_id, status, timestamp) VALUES (?, ?, ?)',
+                [escalatorId, status, timestamp],
                 (_, result) => {
                     Alert.alert("Feedback submitted successfully!");
                 },
@@ -35,11 +68,35 @@ export default function TijdelijkeMeldingen() {
         });
     };
 
+    const getPrediction = () => {
+        const net = models[escalatorId];
+        if (net) {
+            const input = { broken: 0 }; // Example input, adjust as needed
+            const output = net.run(input);
+            setPrediction(output.broken > 0.5 ? 'Broken' : 'Working');
+        } else {
+            Alert.alert("Model for this escalator is not loaded yet.");
+        }
+    };
+
     return (
         <View style={styles.container}>
+            <Text>Select escalator:</Text>
+            <Picker
+                selectedValue={escalatorId}
+                style={{ height: 50, width: 150 }}
+                onValueChange={(itemValue) => setEscalatorId(itemValue)}
+            >
+                <Picker.Item label="Escalator 1" value="1" />
+                <Picker.Item label="Escalator 2" value="2" />
+                {/* Add more escalators as needed */}
+            </Picker>
             <Text>Report the status of the escalator:</Text>
             <Button title="Escalator is Working" onPress={() => submitFeedback('working')} />
             <Button title="Escalator is Broken" onPress={() => submitFeedback('broken')} />
+            {status && <Text>Submitted as: {status}</Text>}
+            <Button title="Get Prediction" onPress={getPrediction} />
+            {prediction && <Text>Prediction: {prediction}</Text>}
         </View>
     );
 }

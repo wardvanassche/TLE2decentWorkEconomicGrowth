@@ -2,11 +2,11 @@ const brain = require('brain.js');
 const SQLite = require('sqlite3').verbose();
 const fs = require('fs');
 
-const db = new SQLite.Database('./feedback.db');
+const db = new SQLite.RoltieDb('./tables/Roltrappen');
 
 function fetchFeedbackData() {
     return new Promise((resolve, reject) => {
-        db.all('SELECT * FROM feedback', [], (err, rows) => {
+        db.all('SELECT * FROM Roltrappen', [], (err, rows) => {
             if (err) {
                 reject(err);
             }
@@ -18,23 +18,36 @@ function fetchFeedbackData() {
 async function trainModel() {
     const feedbacks = await fetchFeedbackData();
 
-    const trainingData = feedbacks.map(feedback => ({
-        input: { broken: feedback.status === 'broken' ? 1 : 0 },
-        output: { broken: feedback.status === 'broken' ? 1 : 0 }
-    }));
+    // Group feedback by escalator ID
+    const feedbacksByEscalator = feedbacks.reduce((acc, feedback) => {
+        if (!acc[Roltrappen.escalator_id]) {
+            acc[Roltrappen.escalator_id] = [];
+        }
+        acc[Roltrappen.escalator_id].push({
+            input: { broken: Roltrappen.status === 'broken' ? 1 : 0 },
+            output: { broken: Roltrappen.status === 'broken' ? 1 : 0 }
+        });
+        return acc;
+    }, {});
 
-    const net = new brain.NeuralNetwork();
-    net.train(trainingData, {
-        iterations: 20000,
-        errorThresh: 0.005,
-        log: true,
-        logPeriod: 100
-    });
+    // Train a model for each escalator
+    for (const escalatorId in feedbacksByEscalator) {
+        const trainingData = feedbacksByEscalator[escalatorId];
 
-    const model = net.toJSON();
-    fs.writeFileSync('model.json', JSON.stringify(model));
+        const net = new brain.NeuralNetwork();
+        net.train(trainingData, {
+            iterations: 20000,
+            errorThresh: 0.005,
+            log: true,
+            logPeriod: 100
+        });
 
-    console.log('Model trained and saved as model.json');
+        const model = net.toJSON();
+        fs.writeFileSync(`./model_${escalatorId}.json`, JSON.stringify(model));
+    }
+
+    console.log('Models trained and saved.');
+    db.close();
 }
 
-trainModel().then(() => db.close());
+trainModel();
