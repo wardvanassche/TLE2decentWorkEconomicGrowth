@@ -18,17 +18,17 @@ export default function Dropdown() {
                     <li style={styles.item}
                         onMouseOver={e => e.currentTarget.style.backgroundColor = styles.itemHover.backgroundColor}
                         onMouseOut={e => e.currentTarget.style.backgroundColor = ''}>
-                        Option 1
+                        <text>Option 1</text>
                     </li>
                     <li style={styles.item}
                         onMouseOver={e => e.currentTarget.style.backgroundColor = styles.itemHover.backgroundColor}
                         onMouseOut={e => e.currentTarget.style.backgroundColor = ''}>
-                        Option 2
+                        <text>Option 2</text>
                     </li>
                     <li style={styles.item}
                         onMouseOver={e => e.currentTarget.style.backgroundColor = styles.itemHover.backgroundColor}
                         onMouseOut={e => e.currentTarget.style.backgroundColor = ''}>
-                        Option 3
+                        <text>Option 3</text>
                     </li>
                 </ul>
     )
