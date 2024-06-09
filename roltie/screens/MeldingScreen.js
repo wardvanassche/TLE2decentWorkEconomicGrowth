@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import {View, Text, TextInput, StyleSheet, Image, TouchableOpacity} from "react-native";
-import Dropdown from "./components/dropdown";
+import React from 'react';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from "react-native";
+import Dropdown from "./components/dropdown/Dropdown";
 
 export default function MeldingScreen() {
 
@@ -8,12 +8,10 @@ export default function MeldingScreen() {
         <View style={styles.view}>
             <Image source={require('../assets/logo.png')} style={styles.logo} />
             <View style={styles.rectangle}>
-                <div style={styles.container}>
-                    < Dropdown/>
-                </div>
 
-                <TouchableOpacity style={styles.button} onPress={() => {
-                }}>
+                <Dropdown style={styles.container}/>
+
+                <TouchableOpacity style={styles.button} onPress={() => {}}>
                     <Text style={styles.buttonText}>Roltie?</Text>
                 </TouchableOpacity>
             </View>
@@ -50,15 +48,16 @@ const styles = StyleSheet.create({
         paddingTop: 50,
     },
     button: {
-        backgroundColor: '#00C720', // Groene kleur
+        backgroundColor: '#00C720',
         paddingVertical: 12,
         paddingHorizontal: 40,
         borderRadius: 5,
         alignItems: 'center',
-        width: '80%',
+        width: '50%',
+        marginTop: '25px',
     },
     buttonText: {
-        color: '#FFFFFF', // Witte tekst
+        color: '#FFFFFF',
         fontSize: 16,
         fontWeight: 'bold',
     },
