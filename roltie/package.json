@@ -11,14 +11,17 @@
   "dependencies": {
     "@expo/metro-runtime": "~3.2.1",
     "@react-native-picker/picker": "^2.7.6",
+    "axios": "^1.7.2",
     "brain.js": "^2.0.0-beta.23",
     "expo": "~51.0.8",
     "expo-file-system": "^17.0.1",
-    "expo-sqlite": "^14.0.3",
     "expo-status-bar": "~1.12.1",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.1",
+    "react-native-get-random-values": "^1.11.0",
     "react-native-web": "~0.19.10"
   },
   "devDependencies": {

@@ -1,24 +1,8 @@
 // App.js
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, Alert, Picker } from 'react-native';
-import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import * as Brain from 'brain.js';
-
-// Open SQLite database
-const db = SQLite.openDatabase('feedback.db');
-
-// Create the feedback table if it doesn't exist
-db.transaction(tx => {
-    tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS Roltrappen (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      escalator_id INTEGER,
-      status TEXT,
-      timestamp TEXT
-    );`
-    );
-});
 
 export default function TijdelijkeMeldingen() {
     const [status, setStatus] = useState(null);
