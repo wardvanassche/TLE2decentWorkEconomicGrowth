@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
 
-export default function HomeScreen() {
+export default function HomeScreen({ meldingen }) {
     return (
         <View style={styles.container}>
             <Image source={require('../assets/logo.png')} style={styles.logo} />
@@ -11,6 +11,17 @@ export default function HomeScreen() {
                 <TouchableOpacity style={styles.button} onPress={() => {}}>
                     <Text style={styles.buttonText}>Roltie</Text>
                 </TouchableOpacity>
+                <FlatList
+                    data={meldingen.data}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => (
+                        <View style={styles.meldingItem}>
+                            <Text>ID: {item.id}</Text>
+                            <Text>LiftID: {item.liftID}</Text>
+                            <Text>Defect: {item.defect ? 'Yes' : 'No'}</Text>
+                        </View>
+                    )}
+                />
             </View>
         </View>
     );
@@ -58,4 +69,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    meldingItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        width: '80%',
+        alignItems: 'flex-start',
+    }
 });
