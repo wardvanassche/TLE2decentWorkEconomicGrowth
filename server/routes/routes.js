@@ -27,6 +27,7 @@ router.use(validateJSONHeader);
 router.get('/meldingen', async (req, res) => {
   try {
     const meldingen = await Melding.find({});
+    console.log("GET meldingen");
     return res.status(200).json({ count: meldingen.length, data: meldingen });
   } catch (error) {
     console.error(error.message);

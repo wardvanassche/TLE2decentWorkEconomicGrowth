@@ -24,7 +24,7 @@ export default function App() {
       {error ? (
         <Text style={styles.errorText}>Error: {error}</Text>
       ) : (
-        <HomeScreen meldingen={meldingen} />
+        <HomeScreen />
       )}
     </View>
   );
