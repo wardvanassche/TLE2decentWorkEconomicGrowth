@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
 
-export default function HomeScreen({ meldingen }) {
-    // Controleer of meldingen en meldingen.data bestaan
-    if (!meldingen || !meldingen.data) {
+export default function HomeScreen(data) {
+    if (!data) {
         return (
             <View style={styles.container}>
                 <Image source={require('../assets/logo.png')} style={styles.logo} />
@@ -13,30 +12,28 @@ export default function HomeScreen({ meldingen }) {
             </View>
         );
     }
-
     return (
-        <View style={styles.container}>
-            <Image source={require('../assets/logo.png')} style={styles.logo} />
-            <View style={styles.rectangle}>
-                <TextInput placeholder="Van" style={styles.input} />
-                <TextInput placeholder="Naar" style={styles.input} />
-                <TouchableOpacity style={styles.button} onPress={() => {}}>
-                    <Text style={styles.buttonText}>Roltie</Text>
-                </TouchableOpacity>
-                <FlatList
-                    data={meldingen.data}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => (
-                        <View style={styles.meldingItem}>
-                            <Text>ID: {item.id}</Text>
-                            <Text>LiftID: {item.liftID}</Text>
-                            <Text>Defect: {item.defect ? 'Yes' : 'No'}</Text>
-                        </View>
-                    )}
-                />
-            </View>
+    <View style={styles.container}>
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
+        <View style={styles.rectangle}>
+            <TextInput placeholder="Van" style={styles.input} />
+            <TextInput placeholder="Naar" style={styles.input} />
+            <TouchableOpacity style={styles.button} onPress={() => {}}>
+                <Text style={styles.buttonText}>Roltie</Text>
+            </TouchableOpacity>
+            <FlatList
+                keyExtractor={(data) => data._id}
+                renderItem={({ data }) => (
+                    <View style={styles.meldingItem}>
+                        <Text>ID: {data.id}</Text>
+                        <Text>LiftID: {data.liftID}</Text>
+                        <Text>Defect: {data.defect ? 'Yes' : 'No'}</Text>
+                    </View>
+                )}
+            />
         </View>
-    );
+    </View>
+);
 }
 
 const styles = StyleSheet.create({
