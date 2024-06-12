@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import Notifications from './tijdelijkeMeldingen';
+import Notifications from '../screens/tijdelijkeMeldingen.js'
 
-export default function HomeScreen() {
+
+export default function HomeScreen({ navigation }) {
     return (
         <View style={styles.container}>
             <Image source={require('../assets/logo.png')} style={styles.logo} />
@@ -13,7 +14,7 @@ export default function HomeScreen() {
                     <Text style={styles.buttonText}>Roltie</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button} onPress={() => {}}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate(Notifications)}>
                     <Text style={styles.buttonText}>druk mij</Text>
                 </TouchableOpacity>
             </View>
