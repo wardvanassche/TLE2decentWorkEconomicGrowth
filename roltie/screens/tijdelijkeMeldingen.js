@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, Alert, Picker } from 'react-native';
+import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import axios from 'axios';
+import { Picker } from '@react-native-picker/picker';
 
 export default function Notifications() {
   const [status, setStatus] = useState(null);
@@ -65,6 +66,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-  },
+    padding: 16,
+  },
 });

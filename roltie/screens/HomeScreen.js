@@ -1,7 +1,5 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import Notifications from '../screens/tijdelijkeMeldingen.js'
-
 
 export default function HomeScreen({ navigation }) {
     return (
@@ -14,7 +12,7 @@ export default function HomeScreen({ navigation }) {
                     <Text style={styles.buttonText}>Roltie</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate(Notifications)}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Details')}>
                     <Text style={styles.buttonText}>druk mij</Text>
                 </TouchableOpacity>
             </View>
