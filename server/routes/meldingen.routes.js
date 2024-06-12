@@ -1,10 +1,10 @@
 import express from 'express';
 import { Melding } from '../models/meldingen.js';
 
-const router = express.Router();
+const meldingRouter = express.Router();
 
 // Middleware for CORS
-router.use((req, res, next) => {
+meldingRouter.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -21,10 +21,10 @@ const validateJSONHeader = (req, res, next) => {
 };
 
 // Apply JSON header validation to all routes
-router.use(validateJSONHeader);
+meldingRouter.use(validateJSONHeader);
 
 // Read function - Retrieve all articles
-router.get('/meldingen', async (req, res) => {
+meldingRouter.get('/meldingen', async (req, res) => {
   try {
     const meldingen = await Melding.find({});
     console.log("GET meldingen");
@@ -36,7 +36,7 @@ router.get('/meldingen', async (req, res) => {
 });
 
 // Detail function - Retrieve a specific article by ID
-router.get('/meldingen/:id', async (req, res) => {
+meldingRouter.get('/meldingen/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const melding = await Melding.findById(id);
@@ -51,7 +51,7 @@ router.get('/meldingen/:id', async (req, res) => {
 });
 
 // Create function - Add a new article
-router.post('/meldingen', async (req, res) => {
+meldingRouter.post('/meldingen', async (req, res) => {
   try {
     const { liftID, escelatorID, defect } = req.body;
     if (!liftID && !escelatorID) {
@@ -67,7 +67,7 @@ router.post('/meldingen', async (req, res) => {
 });
 
 // Update function - Modify an existing article
-router.put('/meldingen/:id', async (req, res) => {
+meldingRouter.put('/meldingen/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { liftID, escelatorID, defect } = req.body;
@@ -86,7 +86,7 @@ router.put('/meldingen/:id', async (req, res) => {
 });
 
 // Delete function - Remove an article
-router.delete('/meldingen/:id', async (req, res) => {
+meldingRouter.delete('/meldingen/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const deletedMelding = await Melding.findByIdAndDelete(id);
@@ -100,4 +100,4 @@ router.delete('/meldingen/:id', async (req, res) => {
   }
 });
 
-export default router;
+export default meldingRouter;

@@ -1,17 +1,20 @@
-import express from "express";
-import connectDB from "./utils/DatabaseConnection.js";
-import bodyParser from "body-parser";
+import express from 'express';
+import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import routes from './routes/routes.js';
 import cors from 'cors';
+import routes from './routes/meldingen.routes.js';
+import connectDB from './utils/DatabaseConnection.js';
 
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT;
 
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use((req, res, next) => {
   console.log('Request Headers:', req.headers);
   res.header('Access-Control-Allow-Origin', '*');
@@ -20,14 +23,16 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/roltie', routes);
+// MongoDB connection
+connectDB();
+
+// Routes
+app.use("", routes);
 
 const startServer = async () => {
-  await connectDB();
-
   try {
-    app.listen(process.env.PORT, () => {
-      console.log(`Server running on Port ${process.env.PORT}`);
+    app.listen(PORT, () => {
+      console.log(`Server running on Port ${PORT}`);
     });
   } catch (error) {
     console.error("Error starting the server:", error);

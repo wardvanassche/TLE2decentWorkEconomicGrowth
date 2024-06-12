@@ -17,4 +17,3 @@ const meldingenSchema = new mongoose.Schema(
 );
 
 export const Melding = mongoose.model('Melding', meldingenSchema);
-

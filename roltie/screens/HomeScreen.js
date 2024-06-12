@@ -1,39 +1,24 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import Notifications from './tijdelijkeMeldingen';
 
-export default function HomeScreen(data) {
-    if (!data) {
-        return (
-            <View style={styles.container}>
-                <Image source={require('../assets/logo.png')} style={styles.logo} />
-                <View style={styles.rectangle}>
-                    <Text>Loading...</Text>
-                </View>
-            </View>
-        );
-    }
+export default function HomeScreen() {
     return (
-    <View style={styles.container}>
-        <Image source={require('../assets/logo.png')} style={styles.logo} />
-        <View style={styles.rectangle}>
-            <TextInput placeholder="Van" style={styles.input} />
-            <TextInput placeholder="Naar" style={styles.input} />
-            <TouchableOpacity style={styles.button} onPress={() => {}}>
-                <Text style={styles.buttonText}>Roltie</Text>
-            </TouchableOpacity>
-            <FlatList
-                keyExtractor={(data) => data._id}
-                renderItem={({ data }) => (
-                    <View style={styles.meldingItem}>
-                        <Text>ID: {data.id}</Text>
-                        <Text>LiftID: {data.liftID}</Text>
-                        <Text>Defect: {data.defect ? 'Yes' : 'No'}</Text>
-                    </View>
-                )}
-            />
+        <View style={styles.container}>
+            <Image source={require('../assets/logo.png')} style={styles.logo} />
+            <View style={styles.rectangle}>
+                <TextInput placeholder="Van" style={styles.input} />
+                <TextInput placeholder="Naar" style={styles.input} />
+                <TouchableOpacity style={styles.button} onPress={() => {}}>
+                    <Text style={styles.buttonText}>Roltie</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.button} onPress={() => {}}>
+                    <Text style={styles.buttonText}>druk mij</Text>
+                </TouchableOpacity>
+            </View>
         </View>
-    </View>
-);
+    );
 }
 
 const styles = StyleSheet.create({
@@ -55,99 +40,27 @@ const styles = StyleSheet.create({
         height: '84%',
         backgroundColor: '#FFFFFF',
         alignItems: 'center',
-        paddingTop: 80,
-        position: 'relative',
+        paddingTop: 50,
     },
-    settingsButton: {
-        position: 'absolute',
-        top: 45,
-        right: 40,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: 30,
-    },
-    dot: {
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: '#4A4A4A',
-    },
-    inputContainer: {
-        width: '100%',
-        alignItems: 'center',
-        paddingVertical: 20,
-        position: 'absolute',
-        top: 80,
-        zIndex: 1,
-    },
-    inputVan: {
-        marginTop: 15,
-    },
-    inputNaar: {
-        marginTop: 10,
+    input: {
+        height: 40,
+        width: '80%',
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 20,
+        paddingHorizontal: 10,
     },
     button: {
-        backgroundColor: '#00C720',
+        backgroundColor: '#00C720', // Groene kleur
         paddingVertical: 12,
         paddingHorizontal: 40,
         borderRadius: 5,
         alignItems: 'center',
         width: '80%',
-        marginTop: 20,
     },
     buttonText: {
-        color: '#FFFFFF',
+        color: '#FFFFFF', // Witte tekst
         fontSize: 16,
         fontWeight: 'bold',
     },
-    loaderContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
-    },
-    loader: {
-        width: 50,
-        height: 50,
-        borderRadius: 5,
-    },
-    list: {
-        width: '100%',
-        backgroundColor: '#FFFFFF',
-    },
-    listItem: {
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: 'grey',
-    },
-    reportContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 300,
-        width: '80%',
-    },
-    reportText: {
-        fontSize: 14,
-        color: '#4A4A4A',
-        marginRight: 10,
-        fontWeight: 'bold',
-    },
-    reportButton: {
-        backgroundColor: '#4A4A4A',
-        width: 140,
-        height: 40,
-        borderRadius: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    reportButtonText: {
-        color: '#FFFFFF',
-        fontSize: 14,
-        fontWeight: 'bold',
-    },
 });
