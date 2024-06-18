@@ -22,9 +22,9 @@ appRouter.use((req, res, next) => {
 });
 
 // meldingen routes
-appRouter.use("/meldingen", meldingenRouter);
+appRouter.use("/roltie", meldingenRouter);
 
 // feedback routes
-appRouter.use("/feedback", feedbackRoutes);
+appRouter.use("/roltie", feedbackRoutes);
 
 export default appRouter;
