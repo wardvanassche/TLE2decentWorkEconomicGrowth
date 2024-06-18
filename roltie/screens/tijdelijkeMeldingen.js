@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button, Alert } from 'react-native';
-import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 
 export default function Notifications() {
@@ -10,31 +9,71 @@ export default function Notifications() {
 
   const submitFeedback = async (status) => {
     try {
-      const response = await axios.post('http://localhost:3000/feedback', {
-        escalatorId: parseInt(escalatorId),
-        status,
+      const response = await fetch('http://145.137.111.231:8085/roltie/feedback', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          escalatorId: escalatorId, // Include escalatorId in the request body
+          status: status ? 'working' : 'broken', // Ensure status is included in the body
+        }),
       });
-      Alert.alert(response.data);
+
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log("Error response text:", errorText);
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log("Data fetched:", data);
+      Alert.alert(data.message || 'Feedback submitted successfully');
     } catch (error) {
-      Alert.alert('Error submitting feedback');
+      console.error("Error submitting feedback:", error.message);
+      Alert.alert('Error submitting feedback', error.message);
     }
   };
 
   const triggerModelTraining = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/train');
-      Alert.alert(response.data);
+      const response = await fetch('http://145.137.111.231:8085/roltie/train', {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log("Error response text:", errorText);
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      Alert.alert(data.message || 'Model training triggered successfully');
     } catch (error) {
-      Alert.alert('Error triggering model training');
+      console.error("Error triggering model training:", error.message);
+      Alert.alert('Error triggering model training', error.message);
     }
   };
 
   const getPrediction = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/predict/${escalatorId}`);
-      setPrediction(response.data.prediction);
+      const response = await fetch(`http://1145.137.111.231:8085/roltie/predict/${escalatorId}`);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log("Error response text:", errorText);
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setPrediction(data.prediction);
     } catch (error) {
-      Alert.alert('Error getting prediction');
+      console.error("Error getting prediction:", error.message);
+      Alert.alert('Error getting prediction', error.message);
     }
   };
 
@@ -51,8 +90,8 @@ export default function Notifications() {
         {/* Add more escalators as needed */}
       </Picker>
       <Text>Report the status of the escalator:</Text>
-      <Button title="Escalator is Working" onPress={() => submitFeedback('working')} />
-      <Button title="Escalator is Broken" onPress={() => submitFeedback('broken')} />
+      <Button title="Escalator is Working" onPress={() => submitFeedback(true)} />
+      <Button title="Escalator is Broken" onPress={() => submitFeedback(false)} />
       {status && <Text>Submitted as: {status}</Text>}
       <Button title="Trigger Model Training" onPress={triggerModelTraining} />
       <Button title="Get Prediction" onPress={getPrediction} />

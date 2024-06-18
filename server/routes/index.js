@@ -1,9 +1,10 @@
 import { Router } from "express";
-import router from "./index.js";
+import meldingenRouter from "../routes/meldingen.routes.js";  // Zorg ervoor dat je juiste routers importeert
+import feedbackRoutes from "../routes/feedback.routes.js";  // Zorg ervoor dat je juiste routers importeert
 
-const router = Router();
+const appRouter = Router();
 
-router.use((req, res, next) => {
+appRouter.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
@@ -21,9 +22,9 @@ router.use((req, res, next) => {
 });
 
 // meldingen routes
-router.use("/meldingen", meldingenRouter);
+appRouter.use("/meldingen", meldingenRouter);
 
 // feedback routes
-router.use("/feedback", feedbackRoutes);
+appRouter.use("/feedback", feedbackRoutes);
 
-export default router;
+export default appRouter;

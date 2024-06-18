@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import routes from './routes/meldingen.routes.js';
+import appRouter from './routes/index.js';
 import connectDB from './utils/DatabaseConnection.js';
 
 dotenv.config();
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 connectDB();
 
 // Routes
-app.use("", routes);
+app.use("", appRouter);
 
 const startServer = async () => {
   try {

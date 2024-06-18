@@ -2,14 +2,14 @@ import mongoose from 'mongoose';
 
 const meldingenSchema = new mongoose.Schema(
   {
-    liftID: {
+    liftId: {
       type: Number,
       required: true,
     },
-    escelatorID: {
+    escelatorId: {
       type: Number,
     },
-    defect: {
+    status: {
       type: Boolean,
     }
   },
