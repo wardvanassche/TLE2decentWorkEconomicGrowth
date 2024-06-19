@@ -1,18 +1,7 @@
-import Feedback from '../models/feedback.js';
 import brain from 'brain.js';
 import fs from 'fs';
+import fetchFeedbackData from './fetchFeedbackController.js';
 
-// Function to fetch feedback data
-const fetchFeedbackData = async () => {
-  try {
-    return await Feedback.find({});
-  } catch (error) {
-    console.error('Error fetching feedback data:', error);
-    throw new Error('Database fetch error');
-  }
-};
-
-// Function to train the model
 const trainModel = async () => {
   try {
     const feedbacks = await fetchFeedbackData();
@@ -54,23 +43,7 @@ const trainModel = async () => {
   }
 };
 
-// Controller functions
-export const submitFeedback = async (req, res) => {
-  const { escalatorId, status } = req.body;
-  const timestamp = new Date();
-
-  const feedback = new Feedback({ escalatorId, status, timestamp });
-  console.log(feedback);
-  try {
-    await feedback.save();
-    res.status(201).send({ message: 'Feedback submitted successfully' });
-  } catch (error) {
-    console.error('Error submitting feedback:', error);
-    res.status(500).send({ message: 'Error submitting feedback', error: error.message });
-  }
-};
-
-export const trainModels = async (req, res) => {
+const TrainModelsHandler = async (req, res) => {
   try {
     await trainModel();
     res.status(200).send({ message: 'Models trained successfully' });
@@ -79,3 +52,5 @@ export const trainModels = async (req, res) => {
     res.status(500).send({ message: 'Error training models', error: error.message });
   }
 };
+
+export default TrainModelsHandler;
