@@ -7,10 +7,10 @@ export default function Notifications() {
   const [escalatorId, setEscalatorId] = useState("1");
   const [prediction, setPrediction] = useState(null);
 
-  const submitFeedback = async (status) => {
+  const submitFeedback = async (isWorking) => {
     try {
       const response = await fetch(
-        "http://145.137.111.231:8085/roltie/feedback",
+        "http://145.137.111.231:8085/roltie/meldingen",
         {
           method: "POST",
           headers: {
@@ -19,7 +19,7 @@ export default function Notifications() {
           },
           body: JSON.stringify({
             escalatorId: escalatorId, // Include escalatorId in the request body
-            status: status ? "working" : "broken", // Ensure status is included in the body
+            status: isWorking, // Send status as a boolean
           }),
         }
       );
@@ -107,11 +107,11 @@ export default function Notifications() {
       <Text>Report the status of the escalator:</Text>
       <Button
         title="Escalator is Working"
-        onPress={() => submitFeedback(true)}
+        onPress={() => submitFeedback(true)} // Pass boolean true for working
       />
       <Button
         title="Escalator is Broken"
-        onPress={() => submitFeedback(false)}
+        onPress={() => submitFeedback(false)} // Pass boolean false for broken
       />
       {status && <Text>Submitted as: {status}</Text>}
       <Button title="Trigger Model Training" onPress={triggerModelTraining} />

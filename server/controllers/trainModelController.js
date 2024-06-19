@@ -1,10 +1,10 @@
 import brain from 'brain.js';
 import fs from 'fs';
-import fetchFeedbackData from './fetchFeedbackController.js';
+import fetchMeldingData from './fetchMeldingenController.js';
 
 const trainModel = async () => {
   try {
-    const feedbacks = await fetchFeedbackData();
+    const feedbacks = await fetchMeldingData();
 
     if (!feedbacks || feedbacks.length === 0) {
       console.warn('No feedback data found for training.');
