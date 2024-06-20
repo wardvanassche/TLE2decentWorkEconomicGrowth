@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,13 +7,18 @@ import {
   Alert,
   Dimensions,
   ScrollView,
+  Switch,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import { BarChart } from "react-native-chart-kit";
 
 export default function Settings() {
   const [escalatorIds, setEscalatorIds] = useState(["1", "2"]); // Example escalator IDs
   const [predictions, setPredictions] = useState([]);
+  const [showChart, setShowChart] = useState(true); // Toggle state
+
+  useEffect(() => {
+    getPredictions();
+  }, []); // Empty dependency array means this runs once when the component mounts
 
   const triggerModelTraining = async () => {
     try {
@@ -33,6 +38,9 @@ export default function Settings() {
 
       const data = await response.json();
       Alert.alert(data.message || "Model training triggered successfully");
+
+      // Re-trigger predictions after model training
+      getPredictions();
     } catch (error) {
       Alert.alert("Error triggering model training", error.message);
     }
@@ -92,23 +100,25 @@ export default function Settings() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Predictions Chart</Text>
-      <BarChart
-        style={styles.chart}
-        data={data}
-        width={Dimensions.get("window").width - 32}
-        height={220}
-        chartConfig={chartConfig}
-        verticalLabelRotation={30}
-        fromZero={true}
-      />
-      <View style={styles.buttonContainer}>
-        <Button title="Trigger Model Training" onPress={triggerModelTraining} />
+      <Text style={styles.title}>Predictions Display</Text>
+      <View style={styles.switchContainer}>
+        <Text>Show Chart</Text>
+        <Switch
+          value={showChart}
+          onValueChange={() => setShowChart((previousState) => !previousState)}
+        />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Get Predictions" onPress={getPredictions} />
-      </View>
-      {predictions.length > 0 && (
+      {showChart ? (
+        <BarChart
+          style={styles.chart}
+          data={data}
+          width={Dimensions.get("window").width - 32}
+          height={220}
+          chartConfig={chartConfig}
+          verticalLabelRotation={30}
+          fromZero={true}
+        />
+      ) : (
         <View>
           {predictions.map((pred, index) => (
             <Text key={index} style={styles.prediction}>
@@ -117,6 +127,9 @@ export default function Settings() {
           ))}
         </View>
       )}
+      <View style={styles.buttonContainer}>
+        <Button title="Update Roltrappen" onPress={triggerModelTraining} />
+      </View>
     </ScrollView>
   );
 }
@@ -148,5 +161,11 @@ const styles = StyleSheet.create({
   chart: {
     marginVertical: 8,
     borderRadius: 16,
+  },
+  switchContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
   },
 });
