@@ -12,13 +12,13 @@ import {
 import { BarChart } from "react-native-chart-kit";
 
 export default function Settings() {
-  const [escalatorIds, setEscalatorIds] = useState(["1", "2"]); // Example escalator IDs
+  const [escalatorIds] = useState(["1", "2"]); // Example escalator IDs
   const [predictions, setPredictions] = useState([]);
   const [showChart, setShowChart] = useState(true); // Toggle state
 
   useEffect(() => {
     getPredictions();
-  }, []); // Empty dependency array means this runs once when the component mounts
+  }, []); // Runs once when the component mounts
 
   const triggerModelTraining = async () => {
     try {
@@ -138,14 +138,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     flex: 1,
-  },
-  label: {
-    marginBottom: 8,
-  },
-  picker: {
-    height: 50,
-    width: "100%",
-    marginBottom: 16,
   },
   buttonContainer: {
     marginBottom: 16,
