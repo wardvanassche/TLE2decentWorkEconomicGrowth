@@ -1,6 +1,6 @@
 export default async function fetchMeldingen() {
   try {
-    const apiUrl = "http://145.137.110.59:8085/roltie/meldingen";
+    const apiUrl = "http://145.137.68.64:8085/roltie/meldingen";
     console.log("API URL:", apiUrl);
 
     const response = await fetch(apiUrl, {
