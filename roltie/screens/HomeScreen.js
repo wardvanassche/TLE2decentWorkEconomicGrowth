@@ -12,8 +12,12 @@ export default function HomeScreen({ navigation }) {
                     <Text style={styles.buttonText}>Roltie</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Details')}>
-                    <Text style={styles.buttonText}>druk mij</Text>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Notifications')}>
+                    <Text style={styles.buttonText}>Meldingen</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Settings')}>
+                    <Text style={styles.buttonText}>Instellingen</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import fetchMeldingen from "./utils/fetchMeldingen.js";
 import HomeScreen from "./screens/HomeScreen.js";
-import Notifications from './screens/tijdelijkeMeldingen.js';
+import Notifications from "./screens/Notifications.js";
+import Settings from "./screens/Settings.js";
 
 const Stack = createStackNavigator();
 
@@ -26,16 +27,20 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
-          name="Home"
-          options={{ title: "Home" }}
-        >
-          {props => <HomeScreen {...props} meldingen={meldingen} error={error} />}
+        <Stack.Screen name="Home" options={{ title: "Home" }}>
+          {(props) => (
+            <HomeScreen {...props} meldingen={meldingen} error={error} />
+          )}
         </Stack.Screen>
         <Stack.Screen
-          name="Details"
+          name="Notifications"
           component={Notifications}
           options={{ title: "meldingen" }}
+        />
+        <Stack.Screen
+          name="Settings"
+          component={Settings}
+          options={{ title: "Instellingen" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
