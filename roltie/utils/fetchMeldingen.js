@@ -1,10 +1,6 @@
-import axios from "axios";
-
 export default async function fetchMeldingen() {
   try {
-    // Gebruik het IP-adres van je computer als je een mobiele emulator gebruikt
-    // const apiUrl = "http://145.137.109.147:8085/roltie/meldingen"; // Vervang 192.168.1.100 met het IP-adres van je computer
-    const apiUrl = "http://145.137.109.147:8085/roltie/meldingen"; // Vervang 192.168.1.100 met het IP-adres van je computer
+    const apiUrl = "http://145.137.110.59:8085/roltie/meldingen";
     console.log("API URL:", apiUrl);
 
     const response = await fetch(apiUrl, {
