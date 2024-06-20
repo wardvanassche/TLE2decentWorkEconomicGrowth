@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Button, Alert, Dimensions, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Alert,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { BarChart } from "react-native-chart-kit";
 
 export default function Settings() {
-  const [escalatorId, setEscalatorId] = useState("1");
-  const [prediction, setPrediction] = useState(null);
+  const [escalatorIds, setEscalatorIds] = useState(["1", "2"]); // Example escalator IDs
   const [predictions, setPredictions] = useState([]);
 
   const triggerModelTraining = async () => {
@@ -16,7 +23,7 @@ export default function Settings() {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ escalatorId }),
+        body: JSON.stringify({ escalatorIds }),
       });
 
       if (!response.ok) {
@@ -31,44 +38,31 @@ export default function Settings() {
     }
   };
 
-  const getPrediction = async () => {
+  const getPredictions = async () => {
     try {
-      const response = await fetch("http://145.137.68.64:8085/roltie/predict", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ escalatorId }),
-      });
+      const responses = await Promise.all(
+        escalatorIds.map((id) =>
+          fetch("http://145.137.68.64:8085/roltie/predict", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ escalatorId: id }),
+          })
+        )
+      );
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error("Network response was not ok: " + errorText);
-      }
+      const data = await Promise.all(responses.map((res) => res.json()));
 
-      const data = await response.json();
-      setPrediction(data.prediction);
+      const newPredictions = data.map((item, index) => ({
+        label: `Escalator ${escalatorIds[index]}`,
+        value: parseFloat(item.prediction),
+      }));
 
-      setPredictions((prevPredictions) => {
-        const existingPrediction = prevPredictions.find(
-          (p) => p.label === `Escalator ${escalatorId}`
-        );
-        if (existingPrediction) {
-          return prevPredictions.map((p) =>
-            p.label === `Escalator ${escalatorId}`
-              ? { ...p, value: parseFloat(data.prediction) }
-              : p
-          );
-        } else {
-          return [
-            ...prevPredictions,
-            { label: `Escalator ${escalatorId}`, value: parseFloat(data.prediction) },
-          ];
-        }
-      });
+      setPredictions(newPredictions);
     } catch (error) {
-      Alert.alert("Error getting prediction", error.message);
+      Alert.alert("Error getting predictions", error.message);
     }
   };
 
@@ -98,18 +92,6 @@ export default function Settings() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text>Select escalator:</Text>
-      <Picker
-        selectedValue={escalatorId}
-        style={{ height: 50, width: 150 }}
-        onValueChange={(itemValue) => setEscalatorId(itemValue)}
-      >
-        <Picker.Item label="Escalator 1" value="1" />
-        <Picker.Item label="Escalator 2" value="2" />
-      </Picker>
-      <Button title="Trigger Model Training" onPress={triggerModelTraining} />
-      <Button title="Get Prediction" onPress={getPrediction} />
-      {prediction && <Text>Prediction: {prediction}</Text>}
       <Text style={styles.title}>Predictions Chart</Text>
       <BarChart
         style={styles.chart}
@@ -120,14 +102,43 @@ export default function Settings() {
         verticalLabelRotation={30}
         fromZero={true}
       />
+      <View style={styles.buttonContainer}>
+        <Button title="Trigger Model Training" onPress={triggerModelTraining} />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button title="Get Predictions" onPress={getPredictions} />
+      </View>
+      {predictions.length > 0 && (
+        <View>
+          {predictions.map((pred, index) => (
+            <Text key={index} style={styles.prediction}>
+              {pred.label}: {pred.value}
+            </Text>
+          ))}
+        </View>
+      )}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 16,
+    flex: 1,
+  },
+  label: {
+    marginBottom: 8,
+  },
+  picker: {
+    height: 50,
+    width: "100%",
+    marginBottom: 16,
+  },
+  buttonContainer: {
+    marginBottom: 16,
+  },
+  prediction: {
+    marginBottom: 16,
   },
   title: {
     fontSize: 18,
