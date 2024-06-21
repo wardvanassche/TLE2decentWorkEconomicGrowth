@@ -27,7 +27,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" options={{ title: "Home" }}>
+        <Stack.Screen name="Home" options={{ title: "Home", headerShown: false}}>
           {(props) => (
             <HomeScreen {...props} meldingen={meldingen} error={error} />
           )}
@@ -40,7 +40,7 @@ export default function App() {
         <Stack.Screen
           name="Settings"
           component={Settings}
-          options={{ title: "Instellingen" }}
+          options={{ title: "instellingen" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
