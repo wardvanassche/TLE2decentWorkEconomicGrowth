@@ -1,18 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, Animated } from 'react-native';
-import InputComponent from './components/InputComponent';
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, Animated, Alert, TextInput } from 'react-native';
+import axios from 'axios';
+import inputBackground2 from './assets/inputvelden2.png'; // Importeer de nieuwe afbeelding
 
 export default function HomeScreen({ navigation }) {
     const [loading, setLoading] = useState(false);
     const [showList, setShowList] = useState(false);
     const [data, setData] = useState([]);
+    const [startStation, setStartStation] = useState('');
+    const [endStation, setEndStation] = useState('');
+    const [showLoader, setShowLoader] = useState(false);
+    const [showLogo, setShowLogo] = useState(true);
+    const [showBackground, setShowBackground] = useState(false);
+    const [showListBackground, setShowListBackground] = useState(false);
+    const [inputBackgroundColor, setInputBackgroundColor] = useState('white');
+    const [inputBackgroundImage, setInputBackgroundImage] = useState(require('./assets/inputvelden.png')); // State voor achtergrondafbeelding
+    const [inputTextColor, setInputTextColor] = useState('#4A4A4A'); // State voor tekstkleur van inputvelden
 
     const opacityAnim = useRef(new Animated.Value(0)).current;
     const translateYAnim = useRef(new Animated.Value(50)).current;
-    const inputTranslateYAnim = useRef(new Animated.Value(0)).current;
-2
+    const backgroundTranslateYAnim = useRef(new Animated.Value(0)).current;
+    const imageOpacityAnim = useRef(new Animated.Value(1)).current; // Animatie voor afbeelding opaciteit
+
     useEffect(() => {
-        // Start the fade-in and slide-in animation when the component mounts
         Animated.parallel([
             Animated.timing(opacityAnim, {
                 toValue: 1,
@@ -29,79 +39,157 @@ export default function HomeScreen({ navigation }) {
 
     useEffect(() => {
         if (showList) {
-            Animated.timing(inputTranslateYAnim, {
-                toValue: -80, // Adjust this value to control the slide distance
+            Animated.timing(backgroundTranslateYAnim, {
+                toValue: 100,
                 duration: 500,
                 useNativeDriver: true,
             }).start();
+            setShowListBackground(true);
         } else {
-            Animated.timing(inputTranslateYAnim, {
-                toValue: 0, // Reset the position
+            Animated.timing(backgroundTranslateYAnim, {
+                toValue: 0,
                 duration: 500,
                 useNativeDriver: true,
             }).start();
+            setShowListBackground(false);
         }
     }, [showList]);
 
-    const handlePress = () => {
-        setLoading(true);
-        // Simulate a network request with a timeout
-        setTimeout(() => {
-            setLoading(false);
-            setShowList(true);
-            setData([
-                { id: '1', name: 'Lift 1 - Station A' },
-                { id: '2', name: 'Roltrap 2 - Station B' },
-                { id: '3', name: 'Lift 3 - Station C' },
-            ]);
-        }, 2000); // 2 seconds wait time
+    const handlePress = async () => {
+        if (!startStation || !endStation) {
+            Alert.alert('Fout', 'Vul beide stationnamen in');
+            return;
+        }
+
+        setShowLoader(true);
+
+        try {
+            const response = await axios.get('http://localhost:3000/stations');
+            const station = response.data.find(item => item.name.toLowerCase() === endStation.toLowerCase());
+            if (station) {
+                setData([station]);
+                setShowList(true);
+                setShowLogo(false);
+                setShowBackground(true);
+                setInputBackgroundColor('#4A4A4A');
+                animateBackgroundImageChange(() => {
+                    setInputBackgroundImage(inputBackground2); // Gebruik inputvelden2.png
+                });
+                setInputTextColor('white'); // Verander de tekstkleur naar wit
+            } else {
+                Alert.alert('Niet gevonden', 'Het opgegeven eindstation is niet gevonden.');
+                setShowList(false);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setShowLoader(false);
+        }
+    };
+
+    const handleBackPress = () => {
+        setShowList(false);
+        setData([]);
+        setShowLogo(true);
+        setShowBackground(false);
+        setShowListBackground(false);
+        setInputBackgroundColor('white');
+        setInputBackgroundImage(require('./assets/inputvelden.png')); // Terug naar originele afbeelding bij terugknop
+        setInputTextColor('#4A4A4A'); // Verander tekstkleur terug naar origineel
     };
 
     const goToSettings = () => {
-        navigation.navigate('Settings'); // Navigate to the settings page
+        navigation.navigate('Settings');
+    };
+
+    const animateBackgroundImageChange = (callback) => {
+        Animated.timing(imageOpacityAnim, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: true,
+        }).start(() => {
+            callback();
+            Animated.timing(imageOpacityAnim, {
+                toValue: 1,
+                duration: 500,
+                useNativeDriver: true,
+            }).start();
+        });
     };
 
     return (
         <View style={styles.container}>
-            <Image source={require('./assets/logo.png')} style={styles.logo} />
+            {showLogo && <Image source={require('./assets/logo.png')} style={styles.logo} />}
             <Animated.View style={[styles.rectangle, { opacity: opacityAnim, transform: [{ translateY: translateYAnim }] }]}>
                 <TouchableOpacity style={styles.settingsButton} onPress={goToSettings}>
                     <View style={styles.dot} />
                     <View style={styles.dot} />
                     <View style={styles.dot} />
                 </TouchableOpacity>
-                <Animated.View style={[
-                    styles.inputContainer,
-                    { backgroundColor: showList ? '#4A4A4A' : '#FFFFFF', transform: [{ translateY: inputTranslateYAnim }] }
-                ]}>
-                    <InputComponent
-                        placeholder="Kies een metrostation"
-                        style={styles.inputVan}
-                    />
-                    <InputComponent
-                        placeholder="Kies een metrostation"
-                        style={styles.inputNaar}
-                    />
+                <View style={[styles.inputContainer, { backgroundColor: inputBackgroundColor }]}>
+                    {showList && (
+                        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+                            <Text style={styles.backButtonText}>Terug</Text>
+                        </TouchableOpacity>
+                    )}
+                    <View style={styles.backgroundImageContainer}>
+                        <Animated.Image source={inputBackgroundImage} style={[styles.backgroundImage, { opacity: imageOpacityAnim }]} />
+                        <TextInput
+                            placeholder="Kies een beginstation"
+                            style={[styles.inputVan, { position: 'absolute', top: 10, left: 10, width: '90%', color: inputTextColor }]} // Pas de kleur van de tekst aan
+                            onChangeText={setStartStation}
+                            value={startStation}
+                        />
+                        <TextInput
+                            placeholder="Kies een eindstation"
+                            style={[styles.inputNaar, { position: 'absolute', top: 60, left: 10, width: '90%', color: inputTextColor }]} // Pas de kleur van de tekst aan
+                            onChangeText={setEndStation}
+                            value={endStation}
+                        />
+                    </View>
                     {!loading && !showList && (
                         <TouchableOpacity style={styles.button} onPress={handlePress}>
                             <Text style={styles.buttonText}>Roltie</Text>
                         </TouchableOpacity>
                     )}
-                </Animated.View>
-                {loading && (
+                </View>
+                {showLoader ? (
                     <View style={styles.loaderContainer}>
                         <Image source={require('./assets/loading.gif')} style={styles.loader} />
                     </View>
-                )}
-                {showList && (
-                    <FlatList
-                        data={data}
-                        renderItem={({ item }) => (
-                            <Text style={styles.listItem}>{item.name}</Text>
+                ) : (
+                    <Animated.View style={[styles.list, { transform: [{ translateY: backgroundTranslateYAnim }], backgroundColor: showListBackground ? '#FFFFFF' : '#EAEAEA' }]}>
+                        {showList && (
+                            <FlatList
+                                data={data}
+                                renderItem={({ item }) => {
+                                    let statusText = '';
+                                    let statusImage = require('./assets/working.png');
+
+                                    if (!item.elevators.working) {
+                                        statusText = 'De lift is defect';
+                                        statusImage = require('./assets/notworking.png');
+                                    } else if (!item.escalators.working) {
+                                        statusText = 'De roltrap is defect';
+                                        statusImage = require('./assets/notworking.png');
+                                    } else {
+                                        statusText = 'Beide werken';
+                                    }
+
+                                    return (
+                                        <View style={styles.listItem}>
+                                            <View style={styles.statusContainer}>
+                                                <Image source={statusImage} style={styles.statusImage} />
+                                                <Text style={styles.statusText}>{statusText}</Text>
+                                            </View>
+                                            <Text>{item.name}</Text>
+                                        </View>
+                                    );
+                                }}
+                                keyExtractor={item => item._id}
+                            />
                         )}
-                        keyExtractor={item => item.id}
-                        style={styles.list}
-                    />
+                    </Animated.View>
                 )}
                 {!showList && !loading && (
                     <View style={styles.reportContainer}>
@@ -126,7 +214,7 @@ const styles = StyleSheet.create({
     logo: {
         position: 'absolute',
         top: '4%',
-        width: 200,
+        width: 180,
         height: 100,
         resizeMode: 'contain',
     },
@@ -135,12 +223,12 @@ const styles = StyleSheet.create({
         height: '84%',
         backgroundColor: '#FFFFFF',
         alignItems: 'center',
-        paddingTop: 80,
+        paddingTop: 70,
         position: 'relative',
     },
     settingsButton: {
         position: 'absolute',
-        top: 45,
+        top: 30,
         right: 40,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -155,17 +243,48 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         width: '100%',
+        height: 200,
+        marginTop: -80,
         alignItems: 'center',
-        paddingVertical: 20,
+        paddingVertical: 30,
+        backgroundColor: 'white',
+    },
+    backgroundImageContainer: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    backgroundImage: {
+        width: '90%',
+        height: '100%',
+        resizeMode: 'contain',
+    },
+    backButton: {
         position: 'absolute',
-        top: 80,
-        zIndex: 1,
+        left: 20,
+        top: -40,
+        zIndex: 2,
+    },
+    backButtonText: {
+        fontSize: 16,
+        color: '#FFFFFF',
+        fontWeight: 'bold',
     },
     inputVan: {
-        marginTop: 15,
+        width: '100%',
+        height: 55,
+        borderBottomWidth: 0,
+        borderBottomColor: 'white ',
+        fontSize: 16,
+        paddingLeft: 50,
     },
     inputNaar: {
-        marginTop: 10,
+        width: '100%',
+        height: 110,
+        borderBottomWidth: 0,
+
+        fontSize: 16,
+        paddingLeft: 50,
     },
     button: {
         backgroundColor: '#00C720',
@@ -188,7 +307,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: '100%',
         height: '100%',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent background
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
     },
     loader: {
         width: 50,
@@ -196,13 +315,28 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     list: {
-        width: '100%',
-        backgroundColor: '#FFFFFF',
+        width: '80%',
+        marginTop: 100,
     },
     listItem: {
         padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: 'grey',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    statusContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    statusImage: {
+        width: 50,
+        height: 50,
+        marginRight: 10,
+    },
+    statusText: {
+        fontSize: 16,
+        color: '#4A4A4A',
     },
     reportContainer: {
         flexDirection: 'row',
