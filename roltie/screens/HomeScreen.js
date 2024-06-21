@@ -75,13 +75,14 @@ export default function HomeScreen({ navigation }) {
       Alert.alert("Error", "Fill in both station names");
       return;
     }
-
+  
     setShowLoader(true);
-
+  
     try {
-      const response = await axios.get("http://145.137.68.64:8085/stations");
-      const station = response.data.find(
-          (item) => item.name.toLowerCase() === endStation.toLowerCase()
+      const response = await fetch("http://145.137.68.64:8085/roltie/station");
+      const data = await response.json();
+      const station = data.find(
+        (item) => item.name.toLowerCase() === endStation.toLowerCase()
       );
       if (station) {
         setData([station]);
@@ -106,6 +107,7 @@ export default function HomeScreen({ navigation }) {
       setShowLoader(false);
     }
   };
+  
 
   const handleBackPress = () => {
     setShowList(false);

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import meldingenRouter from "../routes/meldingen.routes.js";  // Zorg ervoor dat je juiste routers importeert
 import modeltrainingRouter from "./model.train.routes.js";  // Zorg ervoor dat je juiste routers importeert
+import stationRouter from "./stations.routes.js";
 
 const appRouter = Router();
 
@@ -26,5 +27,9 @@ appRouter.use("/roltie", meldingenRouter);
 
 // feedback routes
 appRouter.use("/roltie", modeltrainingRouter);
+
+// station routes
+appRouter.use("/roltie", stationRouter);
+
 
 export default appRouter;
