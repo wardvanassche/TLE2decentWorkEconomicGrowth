@@ -202,7 +202,7 @@ export default function HomeScreen({ navigation }) {
                       {
                         position: "absolute",
                         top: 10,
-                        left: 25,
+                        left: 30,
                         width: "90%",
                         color: inputTextColor,
                       },
@@ -217,7 +217,7 @@ export default function HomeScreen({ navigation }) {
                       {
                         position: "absolute",
                         top: 60,
-                        left: 25,
+                        left: 30,
                         width: "90%",
                         color: inputTextColor,
                       },
