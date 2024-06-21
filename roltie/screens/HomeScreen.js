@@ -9,6 +9,9 @@ import {
   Animated,
   Alert,
   TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
 } from "react-native";
 import axios from "axios";
 import inputBackground2 from "../assets/inputvelden2.png"; // Import the new image
@@ -131,174 +134,215 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-      <View style={styles.container}>
-        {showLogo && (
-            <Image
-                source={require("../assets/logo.png")}
-                style={styles.logo}
-                onPress={() => navigation.navigate("Home")}
-            />
-        )}
-        <Animated.View
+
+
+
+      <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : null} // Adjust behavior for Android
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0} // Adjust offset if necessary
+      >
+
+        <View
             style={[
-              styles.rectangle,
-              { opacity: opacityAnim, transform: [{ translateY: translateYAnim }] },
+              styles.bottomrectangle,
             ]}
         >
-          <TouchableOpacity
-              style={styles.settingsButton}
-              onPress={() => navigation.navigate("Settings")}
-          >
-            <View style={styles.dotContainer}>
-              <View style={styles.dot} />
-              <View style={styles.dot} />
-              <View style={styles.dot} />
-            </View>
-          </TouchableOpacity>
+        </View>
 
-          <View
+        <ScrollView contentContainerStyle={styles.scrollView}
+                    keyboardShouldPersistTaps="handled">
+
+          {showLogo && (
+              <Image
+                  source={require("../assets/logo.png")}
+                  style={styles.logo}
+                  onPress={() => navigation.navigate("Home")}
+              />
+          )}
+
+
+
+          <Animated.View
               style={[
-                styles.inputContainer,
-                { backgroundColor: inputBackgroundColor },
+                styles.rectangle,
+                { opacity: opacityAnim, transform: [{ translateY: translateYAnim }] },
               ]}
+
           >
-            <View style={styles.backgroundImageContainer}>
-              <Animated.Image
-                  source={inputBackgroundImage}
-                  style={[styles.backgroundImage, { opacity: imageOpacityAnim }]}
-              />
-              <TextInput
-                  placeholder="Choose a starting station"
-                  style={[
-                    styles.inputVan,
-                    {
-                      position: "absolute",
-                      top: 10,
-                      left: 20,
-                      width: "90%",
-                      color: inputTextColor,
-                    },
-                  ]}
-                  onChangeText={setStartStation}
-                  value={startStation}
-              />
-              <TextInput
-                  placeholder="Choose an end station"
-                  style={[
-                    styles.inputNaar,
-                    {
-                      position: "absolute",
-                      top: 60,
-                      left: 20,
-                      width: "90%",
-                      color: inputTextColor,
-                    },
-                  ]}
-                  onChangeText={setEndStation}
-                  value={endStation}
-              />
-            </View>
-            {!loading && !showList && (
-                <TouchableOpacity style={styles.button} onPress={handlePress}>
-                  <Text style={styles.buttonText}>Roltie</Text>
-                </TouchableOpacity>
-            )}
-          </View>
-          {showLoader ? (
-              <View style={styles.loaderContainer}>
-                <Image
-                    source={require("../assets/loading.gif")}
-                    style={styles.loader}
+
+            <TouchableOpacity
+                style={styles.settingsButton}
+                onPress={() => navigation.navigate("Settings")}
+            >
+              <View style={styles.dotContainer}>
+                <View style={styles.dot} />
+                <View style={styles.dot} />
+                <View style={styles.dot} />
+              </View>
+            </TouchableOpacity>
+
+            <View
+                style={[
+                  styles.inputContainer,
+                  { backgroundColor: inputBackgroundColor },
+                ]}
+            >
+              <View style={styles.backgroundImageContainer}>
+                <Animated.Image
+                    source={inputBackgroundImage}
+                    style={[styles.backgroundImage, { opacity: imageOpacityAnim }]}
+                />
+                <TextInput
+                    placeholder="Choose a starting station"
+                    style={[
+                      styles.inputVan,
+                      {
+                        position: "absolute",
+                        top: 10,
+                        left: 25,
+                        width: "90%",
+                        color: inputTextColor,
+                      },
+                    ]}
+                    onChangeText={setStartStation}
+                    value={startStation}
+                />
+                <TextInput
+                    placeholder="Choose an end station"
+                    style={[
+                      styles.inputNaar,
+                      {
+                        position: "absolute",
+                        top: 60,
+                        left: 25,
+                        width: "90%",
+                        color: inputTextColor,
+                      },
+                    ]}
+                    onChangeText={setEndStation}
+                    value={endStation}
                 />
               </View>
-          ) : (
-              <Animated.View
-                  style={[
-                    styles.list,
-                    {
-                      transform: [{ translateY: backgroundTranslateYAnim }],
-                      backgroundColor: showListBackground ? "#FFFFFF" : "#EAEAEA",
-                    },
-                  ]}
-              >
-                {showList && (
-                    <FlatList
-                        data={data}
-                        renderItem={({ item }) => {
-                          let statusText = "";
-                          let statusImage = require("../assets/working.png");
-
-                          if (!item.elevators.working) {
-                            statusText = "The elevator is out of order";
-                            statusImage = require("../assets/notworking.png");
-                          } else if (!item.escalators.working) {
-                            statusText = "The escalator is out of order";
-                            statusImage = require("../assets/notworking.png");
-                          } else {
-                            statusText = "Both are working";
-                          }
-
-                          return (
-                              <View style={styles.listItem}>
-                                <View style={styles.statusContainer}>
-                                  <Image
-                                      source={statusImage}
-                                      style={styles.statusImage}
-                                  />
-                                  <Text style={styles.statusText}>{statusText}</Text>
-                                </View>
-                                <Text>{item.name}</Text>
-                              </View>
-                          );
-                        }}
-                        keyExtractor={(item) => item._id}
-                    />
-                )}
-              </Animated.View>
-          )}
-          {!showList && !loading && (
-              <View style={styles.reportContainer}>
-                <Text style={styles.reportText}>
-                  Elevator or escalator not working?
-                </Text>
-                <TouchableOpacity
-                    style={styles.reportButton}
-                    onPress={() => navigation.navigate("Notifications")}
+              {!loading && !showList && (
+                  <TouchableOpacity style={styles.button} onPress={handlePress}>
+                    <Text style={styles.buttonText}>ROLTIE?</Text>
+                  </TouchableOpacity>
+              )}
+            </View>
+            {showLoader ? (
+                <View style={styles.loaderContainer}>
+                  <Image
+                      source={require("../assets/loading.gif")}
+                      style={styles.loader}
+                  />
+                </View>
+            ) : (
+                <Animated.View
+                    style={[
+                      styles.list,
+                      {
+                        transform: [{ translateY: backgroundTranslateYAnim }],
+                        backgroundColor: showListBackground ? "#FFFFFF" : "#EAEAEA",
+                      },
+                    ]}
                 >
-                  <Text style={styles.reportButtonText}>Make a report</Text>
-                </TouchableOpacity>
-              </View>
-          )}
-        </Animated.View>
-      </View>
+                  {showList && (
+                      <FlatList
+                          data={data}
+                          renderItem={({ item }) => {
+                            let statusText = "";
+                            let statusImage = require("../assets/working.png");
+
+                            if (!item.elevators.working) {
+                              statusText = "The elevator is out of order";
+                              statusImage = require("../assets/notworking.png");
+                            } else if (!item.escalators.working) {
+                              statusText = "The escalator is out of order";
+                              statusImage = require("../assets/notworking.png");
+                            } else {
+                              statusText = "Both are working";
+                            }
+
+                            return (
+                                <View style={styles.listItem}>
+                                  <View style={styles.statusContainer}>
+                                    <Image
+                                        source={statusImage}
+                                        style={styles.statusImage}
+                                    />
+                                    <Text style={styles.statusText}>{statusText}</Text>
+                                  </View>
+                                  <Text>{item.name}</Text>
+                                </View>
+                            );
+                          }}
+                          keyExtractor={(item) => item._id}
+                      />
+                  )}
+                </Animated.View>
+
+            )}
+
+            {!showList && !loading && (
+                <View style={styles.reportContainer}>
+                  <Text style={styles.reportText}>
+                    Elevator or escalator not working?
+                  </Text>
+                  <TouchableOpacity
+                      style={styles.reportButton}
+                      onPress={() => navigation.navigate("Notifications")}
+                  >
+                    <Text style={styles.reportButtonText}>Make a report</Text>
+                  </TouchableOpacity>
+                </View>
+            )}
+
+          </Animated.View>
+        </ScrollView>
+      </KeyboardAvoidingView>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#4A4A4A",
+  },
+  scrollView: {
+    flexGrow: 1,
     justifyContent: "flex-end",
     alignItems: "center",
+    paddingBottom: 210, // Adjust padding as needed
   },
   logo: {
     position: "absolute",
-    top: "4%",
+    top: "12%",
     width: 180,
     height: 100,
     resizeMode: "contain",
   },
   rectangle: {
     width: "100%",
-    height: "84%",
+    height: "75%",
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     paddingTop: 70,
-    position: "relative",
+    position: "fixed",
+  },
+  bottomrectangle: {
+    width: "100%",
+    height: 300,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 0,
+    padding:0,
+    margin:0,
   },
   settingsButton: {
     position: "absolute",
-    top: -5,
-    right: 45,
+    top: 20,
+    right: 50,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -309,7 +353,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 10,
     paddingBottom:20,
-    paddingTop:15,
+    paddingTop:20,
     backgroundColor:'#ffffff',
   },
   dot: {
@@ -322,7 +366,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: "100%",
     height: 200,
-    marginTop: -80,
+    marginTop: -20,
     alignItems: "center",
     paddingVertical: 30,
     backgroundColor: "white",
@@ -334,6 +378,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     width: "90%",
+    left:4,
     height: "100%",
     resizeMode: "contain",
   },
@@ -360,7 +405,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 110,
     borderBottomWidth: 0,
-
     fontSize: 16,
     paddingLeft: 50,
   },
@@ -370,7 +414,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderRadius: 5,
     alignItems: "center",
-    width: "80%",
+    width: "70%",
     marginTop: 20,
   },
   buttonText: {
@@ -420,7 +464,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 300,
+    marginTop: 250,
     width: "80%",
   },
   reportText: {
@@ -431,8 +475,8 @@ const styles = StyleSheet.create({
   },
   reportButton: {
     backgroundColor: "#4A4A4A",
-    width: 140,
-    height: 40,
+    width: 130,
+    height: 50,
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
