@@ -103,7 +103,7 @@ export default function Settings() {
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Voorspelling roltrap/lift storing</Text>
       <View style={styles.switchContainer}>
-        <Text>Grafiek of opsomming:</Text>
+        <Text>Grafiek of lijst:</Text>
         <Switch
           value={showChart}
           onValueChange={() => setShowChart((previousState) => !previousState)}
@@ -133,7 +133,7 @@ export default function Settings() {
         </View>
       )}
       <TouchableOpacity style={styles.button} onPress={triggerModelTraining}>
-        <Text style={styles.buttonText}>Update Roltrappen</Text>
+        <Text style={styles.buttonText}>Voorspel</Text>
       </TouchableOpacity>
 
     </ScrollView>
