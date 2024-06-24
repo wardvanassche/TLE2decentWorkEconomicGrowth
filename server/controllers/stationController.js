@@ -9,9 +9,12 @@ const stationMapping = (id) => {
 
 const getStationElevatorStatuses = async (station1, station2) => {
   try {
+    console.log("Fetching all meldingen...");
     const allMeldingen = await Melding.find({
       escalatorId: { $gte: 1, $lte: 60 },
     }).sort({ createdAt: -1 });
+
+    console.log("Fetched all meldingen:", allMeldingen.length);
 
     const escalatorStatuses = {};
 
@@ -27,6 +30,8 @@ const getStationElevatorStatuses = async (station1, station2) => {
       }
     });
 
+    console.log("Escalator statuses:", escalatorStatuses);
+
     const brokenEscalators = [];
     Object.keys(escalatorStatuses).forEach((escalatorId) => {
       const statuses = escalatorStatuses[escalatorId];
@@ -41,10 +46,14 @@ const getStationElevatorStatuses = async (station1, station2) => {
       }
     });
 
+    console.log("Broken escalators:", brokenEscalators);
+
     const overallStatus =
       brokenEscalators.length / Object.keys(escalatorStatuses).length > 0.5
         ? "kapot"
         : "functioning";
+
+    console.log("Overall status:", overallStatus);
 
     return {
       status: overallStatus,
@@ -60,16 +69,23 @@ const stationController = async (req, res) => {
   try {
     const { station1, station2 } = req.body;
 
+    console.log("Received request with stations:", station1, station2);
+
     if (!station1 || !station2) {
+      console.log("Both station names are required");
       return res
         .status(400)
         .json({ message: "Both station names are required" });
     }
 
-    const result = await getStationElevatorStatuses(
-      station1.toLowerCase(),
-      station2.toLowerCase()
-    );
+    const lowerStation1 = station1.toLowerCase();
+    const lowerStation2 = station2.toLowerCase();
+
+    console.log("Lowercased stations:", lowerStation1, lowerStation2);
+
+    const result = await getStationElevatorStatuses(lowerStation1, lowerStation2);
+
+    console.log("Result from getStationElevatorStatuses:", result);
 
     return res.status(200).json(result);
   } catch (error) {
