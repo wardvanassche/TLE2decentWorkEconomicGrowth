@@ -297,8 +297,8 @@ export default function HomeScreen({ navigation }) {
                 <FlatList
                   data={data}
                   renderItem={({ item }) => {
-                    let statusText = "The escalator is working";
-                    let statusImage = require("../assets/working.png");
+                    let statusText = "De roltrap is kapot";
+                    let statusImage = require("../assets/notworkingescalator.png");
 
                     if (item.working === false) {
                       statusText = "The escalator is out of order";
