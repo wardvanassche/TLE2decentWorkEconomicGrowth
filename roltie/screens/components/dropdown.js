@@ -1,77 +1,91 @@
 import React, { useState } from 'react';
-import {StyleSheet} from "react-native";
-export default function Dropdown() {
+import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 
+export default function Dropdown({ title, options, onSelect }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(options[0]);
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     };
 
+    const handleSelect = (option) => {
+        setSelectedOption(option);
+        onSelect(option); // Call onSelect prop with the selected option
+        setIsOpen(false); // Close dropdown after selection
+    };
+
     return (
-        <div style={styles.dropdown}>
-            <button onClick={toggleDropdown} style={styles.toggle}>
-                Select an option
-            </button>
+        <View style={styles.dropdown}>
+            <TouchableHighlight onPress={toggleDropdown} style={styles.toggle} underlayColor="transparent">
+                <Text style={styles.toggleText}>{title}</Text>
+                <View style={[styles.icon, isOpen ? styles.iconOpen : null]} />
+            </TouchableHighlight>
             {isOpen && (
-                <ul style={styles.menu}>
-                    <li style={styles.item}
-                        onMouseOver={e => e.currentTarget.style.backgroundColor = styles.itemHover.backgroundColor}
-                        onMouseOut={e => e.currentTarget.style.backgroundColor = ''}>
-                        <text>Option 1</text>
-                    </li>
-                    <li style={styles.item}
-                        onMouseOver={e => e.currentTarget.style.backgroundColor = styles.itemHover.backgroundColor}
-                        onMouseOut={e => e.currentTarget.style.backgroundColor = ''}>
-                        <text>Option 2</text>
-                    </li>
-                    <li style={styles.item}
-                        onMouseOver={e => e.currentTarget.style.backgroundColor = styles.itemHover.backgroundColor}
-                        onMouseOut={e => e.currentTarget.style.backgroundColor = ''}>
-                        <text>Option 3</text>
-                    </li>
-                </ul>
-    )
-}
-</div>
-)
+                <View style={styles.menu}>
+                    {options.map((option) => (
+                        <TouchableHighlight
+                            key={option.value}
+                            style={styles.item}
+                            onPress={() => handleSelect(option)}
+                            underlayColor="#f0f0f0"
+                        >
+                            <Text>{option.label}</Text>
+                        </TouchableHighlight>
+                    ))}
+                </View>
+            )}
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
     dropdown: {
         position: 'relative',
-        display: 'inline-block',
-        width: '75%',
+        marginBottom: 16,
     },
     toggle: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         backgroundColor: 'white',
-        color: 'grey',
-        cursor: 'pointer',
-        fontSize: '16px',
-        border: '1px solid #00C720',
-        borderRadius: '5px',
+        borderWidth: 1.5,
+        borderColor: '#00C720',
+        borderRadius: 5,
         width: '100%',
-        padding: '10px',
+        padding: 10,
+    },
+    toggleText: {
+        color: 'grey',
+    },
+    icon: {
+        width: 0,
+        height: 0,
+        borderLeftWidth: 8,
+        borderRightWidth: 8,
+        borderBottomWidth: 15,
+        borderStyle: 'solid',
+        borderLeftColor: 'transparent',
+        borderRightColor: 'transparent',
+        borderBottomColor: '#00C720',
+        transform: [{ rotate: '0deg' }],
+    },
+    iconOpen: {
+        transform: [{ rotate: '180deg' }],
     },
     menu: {
-        display: 'block',
         position: 'absolute',
         backgroundColor: 'white',
-        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-        zIndex: '1',
-        marginTop: '5px',
+        zIndex: 1,
+        marginTop: 5,
         width: '100%',
-        padding: '0',
-        listStyleType: 'none',
-        border: '1px solid #00C720',
-        borderRadius: '5px',
+        borderWidth: 1.5,
+        borderColor: '#00C720',
+        borderRadius: 5,
     },
     item: {
-        cursor: 'pointer',
-        color: 'grey',
-        padding: '10px',
-    },
-    itemHover: {
-        backgroundColor: '#00C720',
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
     },
 });

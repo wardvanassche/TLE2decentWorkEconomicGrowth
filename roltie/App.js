@@ -46,7 +46,21 @@ export default function App() {
                 <Stack.Screen
                     name="Notifications"
                     component={Notifications}
-                    options={{ title: "Meldingen" }} // Aangepaste titel voor meldingen scherm
+                    options={({ navigation }) => ({
+                        title: "Meldingen", // Aangepaste titel voor instellingen scherm
+                        headerStyle: {
+                            height: 163, // Maak de header dikker
+                            backgroundColor: "#4A4A4A", // Achtergrondkleur van de navigatiebalk
+                        },
+                        headerTitleAlign: "center", // Centreer de titel van de header
+                        headerTintColor: "#FFFFFF", // Tekstkleur van de navigatiebalk knoppen
+                        headerTitleStyle: {
+                            fontWeight: "bold", // Stijl voor de titel van de navigatiebalk
+                            fontSize: 30, // Grootte van de titel
+                            marginBottom: -30, // Voeg een ondermarge toe om de titel iets lager te plaatsen
+                        },
+                        headerLeft: () => <CustomBackButton navigation={navigation} />, // Voeg de aangepaste terugknop toe
+                    })}
                 />
                 <Stack.Screen
                     name="Settings"
