@@ -7,7 +7,7 @@ import {
   Alert,
   Dimensions,
   ScrollView,
-  Switch,
+  Switch, TouchableOpacity,
 } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 
@@ -89,8 +89,8 @@ export default function Settings() {
   };
 
   const chartConfig = {
-    backgroundGradientFrom: "#fff",
-    backgroundGradientTo: "#fff",
+    backgroundGradientFrom: "#f8f8f8",
+    backgroundGradientTo: "#f8f8f8",
     decimalPlaces: 2,
     color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     style: { borderRadius: 16 },
@@ -100,12 +100,14 @@ export default function Settings() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Predictions Display</Text>
+      <Text style={styles.title}>Voorspelling roltrap/lift storing</Text>
       <View style={styles.switchContainer}>
-        <Text>Show Chart</Text>
+        <Text>Grafiek of opsomming:</Text>
         <Switch
           value={showChart}
           onValueChange={() => setShowChart((previousState) => !previousState)}
+          trackColor={{ false: "#4A4A4A", true: "#76EE59" }}
+          thumbColor={showChart ? "#FFFFFF" : "#FFFFFF"}
         />
       </View>
       {showChart ? (
@@ -115,8 +117,10 @@ export default function Settings() {
           width={Dimensions.get("window").width - 32}
           height={220}
           chartConfig={chartConfig}
-          verticalLabelRotation={30}
+          verticalLabelRotation={0}
           fromZero={true}
+          showValuesOnTopOfBars={true} // Show values on top of bars
+          xLabelsOffset={-5} // Adjust the position of labels
         />
       ) : (
         <View>
@@ -127,17 +131,34 @@ export default function Settings() {
           ))}
         </View>
       )}
-      <View style={styles.buttonContainer}>
-        <Button title="Update Roltrappen" onPress={triggerModelTraining} />
-      </View>
+      <TouchableOpacity style={styles.button} onPress={triggerModelTraining}>
+        <Text style={styles.buttonText}>Update Roltrappen</Text>
+      </TouchableOpacity>
+
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#FFFFFF",
     padding: 16,
     flex: 1,
+  },
+  button: {
+    backgroundColor: "#00C720",
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 5,
+    alignItems: "center",
+    alignSelf: "center", // Center horizontally within parent
+    width: "70%",
+    marginTop: 20,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   buttonContainer: {
     marginBottom: 16,
@@ -153,6 +174,7 @@ const styles = StyleSheet.create({
   chart: {
     marginVertical: 8,
     borderRadius: 16,
+
   },
   switchContainer: {
     flexDirection: "row",
