@@ -72,7 +72,7 @@ export default function HomeScreen({ navigation }) {
 
   const handlePress = async () => {
     if (!startStation || !endStation) {
-      Alert.alert("Error", "Fill in both station names");
+      Alert.alert("Error", "Vul beide stationsnamen in ");
       return;
     }
 
@@ -194,13 +194,13 @@ export default function HomeScreen({ navigation }) {
                     style={[styles.backgroundImage, { opacity: imageOpacityAnim }]}
                 />
                 <TextInput
-                    placeholder="Choose a starting station"
+                    placeholder="Kies start station"
                     style={[
                       styles.inputVan,
                       {
                         position: "absolute",
                         top: 10,
-                        left: 25,
+                        left: 30,
                         width: "90%",
                         color: inputTextColor,
                       },
@@ -209,13 +209,13 @@ export default function HomeScreen({ navigation }) {
                     value={startStation}
                 />
                 <TextInput
-                    placeholder="Choose an end station"
+                    placeholder="Kies eind station"
                     style={[
                       styles.inputNaar,
                       {
                         position: "absolute",
                         top: 60,
-                        left: 25,
+                        left: 30,
                         width: "90%",
                         color: inputTextColor,
                       },
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     position: "absolute",
-    top: "12%",
+    top: "10%",
     width: 180,
     height: 100,
     resizeMode: "contain",

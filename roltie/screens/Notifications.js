@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import Dropdown from "./components/dropdown/Dropdown";
 
 export default function Notifications() {
   const [escalatorId, setEscalatorId] = useState("1");
@@ -48,6 +49,7 @@ export default function Notifications() {
 
   return (
     <ScrollView style={styles.container}>
+        <Dropdown style={styles.container}/>
       <Text>Select escalator:</Text>
       <Picker
         selectedValue={escalatorId}
@@ -85,4 +87,18 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderRadius: 16,
   },
+    view: {
+        flex: 1,
+        backgroundColor: '#4A4A4A',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    rectangle: {
+        width: '100%',
+        height: '84%',
+        backgroundColor: '#FFFFFF',
+        alignItems: 'center',
+        paddingTop: 50,
+    },
 });
+
