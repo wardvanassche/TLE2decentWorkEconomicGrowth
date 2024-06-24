@@ -31,6 +31,7 @@ export default function HomeScreen({ navigation }) {
     require("../assets/inputvelden.png")
   ); // State for background image
   const [inputTextColor, setInputTextColor] = useState("#4A4A4A"); // State for input text color
+  const [showCheckmark, setShowCheckmark] = useState(false); // State for showing the checkmark
 
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const translateYAnim = useRef(new Animated.Value(50)).current;
@@ -145,11 +146,12 @@ export default function HomeScreen({ navigation }) {
         });
         setInputTextColor("white"); // Change text color to white
       } else {
-        Alert.alert(
-          "Not found",
-          "The specified destination station was not found."
-        );
+        setShowCheckmark(true); // Show checkmark when there are no broken escalators
         setShowList(false);
+        setShowLogo(false);
+        setShowBackground(false);
+        setInputBackgroundColor("white");
+        setInputTextColor("#4A4A4A");
       }
     } catch (error) {
       console.error(error);
@@ -164,6 +166,7 @@ export default function HomeScreen({ navigation }) {
 
   const handleBackPress = () => {
     setShowList(false);
+    setShowCheckmark(false); // Hide the checkmark on back button press
     setData([]);
     setShowLogo(true);
     setShowBackground(false);
@@ -320,6 +323,15 @@ export default function HomeScreen({ navigation }) {
                   }}
                   keyExtractor={(item) => item.escalatorId.toString()}
                 />
+              )}
+              {showCheckmark && (
+                <View style={styles.checkmarkContainer}>
+                  <Image
+                    source={require('../assets/check groen.png')}
+                    style={styles.checkmark}
+                  />
+                  <Text style={styles.checkmarkText}>Alles Rolt</Text>
+                </View>
               )}
             </Animated.View>
           )}
@@ -524,5 +536,21 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 14,
     fontWeight: "bold",
+  },
+  checkmarkContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  checkmark: {
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
+  },
+  checkmarkText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginTop: 20,
+    color: "#4A4A4A",
   },
 });
