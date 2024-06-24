@@ -11,10 +11,10 @@ import {
   TextInput,
   KeyboardAvoidingView,
   ScrollView,
-  Platform,
+  Platform
 } from "react-native";
+import axios from "axios";
 import inputBackground2 from "../assets/inputvelden2.png"; // Import the new image
-import { API_PROTOCOL, API_HOST, API_PORT } from "@env";
 
 export default function HomeScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
@@ -28,10 +28,9 @@ export default function HomeScreen({ navigation }) {
   const [showListBackground, setShowListBackground] = useState(false);
   const [inputBackgroundColor, setInputBackgroundColor] = useState("white");
   const [inputBackgroundImage, setInputBackgroundImage] = useState(
-    require("../assets/inputvelden.png")
+      require("../assets/inputvelden.png")
   ); // State for background image
   const [inputTextColor, setInputTextColor] = useState("#4A4A4A"); // State for input text color
-  const [showCheckmark, setShowCheckmark] = useState(false); // State for showing the checkmark
 
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const translateYAnim = useRef(new Animated.Value(50)).current;
@@ -71,72 +70,22 @@ export default function HomeScreen({ navigation }) {
     }
   }, [showList]);
 
-  const stationNames = {
-    beurs: "beurs",
-    "beurss": "beurs",
-    "beur": "beurs",
-    "beurs station": "beurs",
-    "bears": "beurs",
-    "beurrs": "beurs",
-    wilhelminaplein: "wilhelminaplein",
-    "wilheminaplein": "wilhelminaplein",
-    "wilhelminaplin": "wilhelminaplein",
-    "wilhelminplei": "wilhelminaplein",
-    "wilhelminplein": "wilhelminaplein",
-    "wilhelminplein": "wilhelminaplein",
-    "wilhelminaplein station": "wilhelminaplein",
-    "wilheminaplen": "wilhelminaplein",
-    "wilheminplin": "wilhelminaplein",
-    "wilhelminplin": "wilhelminaplein",
-    "wilhelplin": "wilhelminaplein",
-    "wilhelmple": "wilhelminaplein",
-    "kralingse zoom": "kralingse zoom",
-    "kralinse zoom": "kralingse zoom",
-    "kralinge zoom": "kralingse zoom",
-    "kralingse zom": "kralingse zoom",
-    "kraling zoom": "kralingse zoom",
-    "kralingsezoom": "kralingse zoom",
-    "kralingse zoom station": "kralingse zoom",
-    "kraligse zoom": "kralingse zoom",
-    "kraligse zom": "kralingse zoom",
-    "kralingz zoom": "kralingse zoom",
-    "kralingsezoom": "kralingse zoom",
-    "kraliingse zoom": "kralingse zoom"
-  };
-
-  const correctStationName = (name) => {
-    return stationNames[name.toLowerCase()] || name.toLowerCase();
-  };
-
   const handlePress = async () => {
     if (!startStation || !endStation) {
       Alert.alert("Error", "Fill in both station names");
       return;
     }
-
+  
     setShowLoader(true);
-
+  
     try {
-      const response = await fetch(`${API_PROTOCOL}://${API_HOST}:${API_PORT}/roltie/station`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          station1: startStation,
-          station2: endStation,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
+      const response = await fetch("http://145.137.68.64:8085/roltie/station");
       const data = await response.json();
-
-      if (data.brokenEscalators.length > 0) {
-        setData(data.brokenEscalators);
+      const station = data.find(
+        (item) => item.name.toLowerCase() === endStation.toLowerCase()
+      );
+      if (station) {
+        setData([station]);
         setShowList(true);
         setShowLogo(false);
         setShowBackground(true);
@@ -146,27 +95,22 @@ export default function HomeScreen({ navigation }) {
         });
         setInputTextColor("white"); // Change text color to white
       } else {
-        setShowCheckmark(true); // Show checkmark when there are no broken escalators
+        Alert.alert(
+            "Not found",
+            "The specified destination station was not found."
+        );
         setShowList(false);
-        setShowLogo(false);
-        setShowBackground(false);
-        setInputBackgroundColor("white");
-        setInputTextColor("#4A4A4A");
       }
     } catch (error) {
       console.error(error);
-      Alert.alert(
-        "Error",
-        "There was an error retrieving the station information. Please try again later."
-      );
     } finally {
       setShowLoader(false);
     }
   };
+  
 
   const handleBackPress = () => {
     setShowList(false);
-    setShowCheckmark(false); // Hide the checkmark on back button press
     setData([]);
     setShowLogo(true);
     setShowBackground(false);
@@ -192,168 +136,175 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : null} // Adjust behavior for Android
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0} // Adjust offset if necessary
-    >
-      <View style={[styles.bottomrectangle]}></View>
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        keyboardShouldPersistTaps="handled"
+
+
+
+      <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : null} // Adjust behavior for Android
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0} // Adjust offset if necessary
       >
-        {showLogo && (
-          <Image
-            source={require("../assets/logo.png")}
-            style={styles.logo}
-            onPress={() => navigation.navigate("Home")}
-          />
-        )}
-        <Animated.View
-          style={[
-            styles.rectangle,
-            {
-              opacity: opacityAnim,
-              transform: [{ translateY: translateYAnim }],
-            },
-          ]}
-        >
-          <TouchableOpacity
-            style={styles.settingsButton}
-            onPress={() => navigation.navigate("Settings")}
-          >
-            <View style={styles.dotContainer}>
-              <View style={styles.dot} />
-              <View style={styles.dot} />
-              <View style={styles.dot} />
-            </View>
-          </TouchableOpacity>
-          <View
+
+        <View
             style={[
-              styles.inputContainer,
-              { backgroundColor: inputBackgroundColor },
+              styles.bottomrectangle,
             ]}
-          >
-            <View style={styles.backgroundImageContainer}>
-              <Animated.Image
-                source={inputBackgroundImage}
-                style={[styles.backgroundImage, { opacity: imageOpacityAnim }]}
-              />
-              <TextInput
-                placeholder="Choose a starting station"
-                style={[
-                  styles.inputVan,
-                  {
-                    position: "absolute",
-                    top: 10,
-                    left: 30,
-                    width: "90%",
-                    color: inputTextColor,
-                  },
-                ]}
-                onChangeText={(text) => setStartStation(correctStationName(text))}
-                value={startStation}
-              />
-              <TextInput
-                placeholder="Choose an end station"
-                style={[
-                  styles.inputNaar,
-                  {
-                    position: "absolute",
-                    top: 60,
-                    left: 30,
-                    width: "90%",
-                    color: inputTextColor,
-                  },
-                ]}
-                onChangeText={(text) => setEndStation(correctStationName(text))}
-                value={endStation}
-              />
-            </View>
-            {!loading && !showList && (
-              <TouchableOpacity style={styles.button} onPress={handlePress}>
-                <Text style={styles.buttonText}>ROLTIE?</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-          {showLoader ? (
-            <View style={styles.loaderContainer}>
+        >
+        </View>
+
+        <ScrollView contentContainerStyle={styles.scrollView}
+                    keyboardShouldPersistTaps="handled">
+
+          {showLogo && (
               <Image
-                source={require("../assets/loading.gif")}
-                style={styles.loader}
+                  source={require("../assets/logo.png")}
+                  style={styles.logo}
+                  onPress={() => navigation.navigate("Home")}
               />
-            </View>
-          ) : (
-            <Animated.View
+          )}
+
+
+
+          <Animated.View
               style={[
-                styles.list,
-                {
-                  transform: [{ translateY: backgroundTranslateYAnim }],
-                  backgroundColor: showListBackground ? "#FFFFFF" : "#EAEAEA",
-                },
+                styles.rectangle,
+                { opacity: opacityAnim, transform: [{ translateY: translateYAnim }] },
               ]}
+
+          >
+
+            <TouchableOpacity
+                style={styles.settingsButton}
+                onPress={() => navigation.navigate("Settings")}
             >
-              {showList && (
-                <FlatList
-                  data={data}
-                  renderItem={({ item }) => {
-                    let statusText = "The escalator is working";
-                    let statusImage = require("../assets/working.png");
+              <View style={styles.dotContainer}>
+                <View style={styles.dot} />
+                <View style={styles.dot} />
+                <View style={styles.dot} />
+              </View>
+            </TouchableOpacity>
 
-                    if (item.working === false) {
-                      statusText = "The escalator is out of order";
-                      statusImage = require("../assets/notworking.png");
-                    }
-
-                    return (
-                      <View
-                        style={styles.listItem}
-                        key={item.escalatorId.toString()}
-                      >
-                        <View style={styles.statusContainer}>
-                          <Image
-                            source={statusImage}
-                            style={styles.statusImage}
-                          />
-                          <Text style={styles.statusText}>{statusText}</Text>
-                        </View>
-                        <Text>{item.name}</Text>
-                      </View>
-                    );
-                  }}
-                  keyExtractor={(item) => item.escalatorId.toString()}
+            <View
+                style={[
+                  styles.inputContainer,
+                  { backgroundColor: inputBackgroundColor },
+                ]}
+            >
+              <View style={styles.backgroundImageContainer}>
+                <Animated.Image
+                    source={inputBackgroundImage}
+                    style={[styles.backgroundImage, { opacity: imageOpacityAnim }]}
                 />
+                <TextInput
+                    placeholder="Choose a starting station"
+                    style={[
+                      styles.inputVan,
+                      {
+                        position: "absolute",
+                        top: 10,
+                        left: 30,
+                        width: "90%",
+                        color: inputTextColor,
+                      },
+                    ]}
+                    onChangeText={setStartStation}
+                    value={startStation}
+                />
+                <TextInput
+                    placeholder="Choose an end station"
+                    style={[
+                      styles.inputNaar,
+                      {
+                        position: "absolute",
+                        top: 60,
+                        left: 30,
+                        width: "90%",
+                        color: inputTextColor,
+                      },
+                    ]}
+                    onChangeText={setEndStation}
+                    value={endStation}
+                />
+              </View>
+              {!loading && !showList && (
+                  <TouchableOpacity style={styles.button} onPress={handlePress}>
+                    <Text style={styles.buttonText}>ROLTIE?</Text>
+                  </TouchableOpacity>
               )}
-              {showCheckmark && (
-                <View style={styles.checkmarkContainer}>
-                  <Image
-                    source={require('../assets/check groen.png')}
-                    style={styles.checkmark}
-                  />
-                  <Text style={styles.checkmarkText}>Alles Rolt</Text>
-                </View>
-              )}
-            </Animated.View>
-          )}
-          {!showList && !loading && (
-            <View style={styles.reportContainer}>
-              <Text style={styles.reportText}>
-                Elevator or escalator not working?
-              </Text>
-              <TouchableOpacity
-                style={styles.reportButton}
-                onPress={() => navigation.navigate("Notifications")}
-              >
-                <Text style={styles.reportButtonText}>Make a report</Text>
-              </TouchableOpacity>
             </View>
-          )}
-        </Animated.View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            {showLoader ? (
+                <View style={styles.loaderContainer}>
+                  <Image
+                      source={require("../assets/loading.gif")}
+                      style={styles.loader}
+                  />
+                </View>
+            ) : (
+                <Animated.View
+                    style={[
+                      styles.list,
+                      {
+                        transform: [{ translateY: backgroundTranslateYAnim }],
+                        backgroundColor: showListBackground ? "#FFFFFF" : "#EAEAEA",
+                      },
+                    ]}
+                >
+                  {showList && (
+                      <FlatList
+                          data={data}
+                          renderItem={({ item }) => {
+                            let statusText = "";
+                            let statusImage = require("../assets/working.png");
+
+                            if (!item.elevators.working) {
+                              statusText = "The elevator is out of order";
+                              statusImage = require("../assets/notworking.png");
+                            } else if (!item.escalators.working) {
+                              statusText = "The escalator is out of order";
+                              statusImage = require("../assets/notworking.png");
+                            } else {
+                              statusText = "Both are working";
+                            }
+
+                            return (
+                                <View style={styles.listItem}>
+                                  <View style={styles.statusContainer}>
+                                    <Image
+                                        source={statusImage}
+                                        style={styles.statusImage}
+                                    />
+                                    <Text style={styles.statusText}>{statusText}</Text>
+                                  </View>
+                                  <Text>{item.name}</Text>
+                                </View>
+                            );
+                          }}
+                          keyExtractor={(item) => item._id}
+                      />
+                  )}
+                </Animated.View>
+
+            )}
+
+            {!showList && !loading && (
+                <View style={styles.reportContainer}>
+                  <Text style={styles.reportText}>
+                    Elevator or escalator not working?
+                  </Text>
+                  <TouchableOpacity
+                      style={styles.reportButton}
+                      onPress={() => navigation.navigate("Notifications")}
+                  >
+                    <Text style={styles.reportButtonText}>Make a report</Text>
+                  </TouchableOpacity>
+                </View>
+            )}
+
+          </Animated.View>
+        </ScrollView>
+      </KeyboardAvoidingView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -387,8 +338,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "absolute",
     bottom: 0,
-    padding: 0,
-    margin: 0,
+    padding:0,
+    margin:0,
   },
   settingsButton: {
     position: "absolute",
@@ -398,14 +349,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: 20,
-    zIndex: 10,
+    zIndex:10,
   },
   dotContainer: {
     flexDirection: "row",
     padding: 10,
-    paddingBottom: 20,
-    paddingTop: 20,
-    backgroundColor: "#ffffff",
+    paddingBottom:20,
+    paddingTop:20,
+    backgroundColor:'#ffffff',
   },
   dot: {
     width: 8,
@@ -429,7 +380,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     width: "90%",
-    left: 4,
+    left:4,
     height: "100%",
     resizeMode: "contain",
   },
@@ -536,21 +487,5 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 14,
     fontWeight: "bold",
-  },
-  checkmarkContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  checkmark: {
-    width: 100,
-    height: 100,
-    resizeMode: "contain",
-  },
-  checkmarkText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginTop: 20,
-    color: "#4A4A4A",
   },
 });

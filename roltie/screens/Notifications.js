@@ -8,7 +8,6 @@ import {
   ScrollView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { API_PROTOCOL, API_HOST, API_PORT } from "@env";
 
 export default function Notifications() {
   const [escalatorId, setEscalatorId] = useState("1");
@@ -16,7 +15,7 @@ export default function Notifications() {
   const submitFeedback = async (isWorking) => {
     try {
       const response = await fetch(
-        `${API_PROTOCOL}://${API_HOST}:${API_PORT}/roltie/meldingen`,
+        "http://145.137.68.64:8085/roltie/meldingen",
         {
           method: "POST",
           headers: {

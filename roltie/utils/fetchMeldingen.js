@@ -1,17 +1,14 @@
-import { API_PROTOCOL, API_HOST, API_PORT } from "@env";
-
 export default async function fetchMeldingen() {
   try {
-    const apiUrl = `${API_PROTOCOL}://${API_HOST}:${API_PORT}/roltie/station`;
-
+    const apiUrl = "http://145.137.68.64:8085/roltie/meldingen";
     console.log("API URL:", apiUrl);
 
     const response = await fetch(apiUrl, {
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
-      timeout: 10000,
+      timeout: 10000
     });
     console.log("Data fetched successfully:", response);
     return response.data; // Return the fetched data
@@ -20,3 +17,4 @@ export default async function fetchMeldingen() {
     throw error;
   }
 }
+
