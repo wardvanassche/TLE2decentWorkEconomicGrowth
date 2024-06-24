@@ -14,7 +14,7 @@ import {
   Platform,
 } from "react-native";
 import inputBackground2 from "../assets/inputvelden2.png"; // Import the new image
-import { API_PROTOCOL, API_HOST, API_PORT } from "@env";
+// import { API_PROTOCOL, API_HOST, API_PORT } from "@env";
 
 export default function HomeScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
@@ -117,7 +117,7 @@ export default function HomeScreen({ navigation }) {
     setShowLoader(true);
 
     try {
-      const response = await fetch(`${API_PROTOCOL}://${API_HOST}:${API_PORT}/roltie/station`, {
+      const response = await fetch(`http://145.137.76.138:8087/roltie/station`, {
         method: "POST",
         headers: {
           Accept: "application/json",

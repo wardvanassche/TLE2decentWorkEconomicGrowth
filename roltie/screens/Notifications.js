@@ -16,7 +16,7 @@ export default function Notifications() {
   const submitFeedback = async (isWorking) => {
     try {
       const response = await fetch(
-        `${API_PROTOCOL}://${API_HOST}:${API_PORT}/roltie/meldingen`,
+        `http://145.137.76.138:8087/roltie/meldingen`,
         {
           method: "POST",
           headers: {

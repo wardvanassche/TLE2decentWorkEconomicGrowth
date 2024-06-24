@@ -24,7 +24,7 @@ export default function Settings() {
 
   const triggerModelTraining = async () => {
     try {
-      const response = await fetch(`${API_PROTOCOL}://${API_HOST}:${API_PORT}/roltie/train`, {
+      const response = await fetch(`http://145.137.76.138:8087/roltie/train`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -52,7 +52,7 @@ export default function Settings() {
     try {
       const responses = await Promise.all(
         escalatorIds.map((id) =>
-          fetch(`${API_PROTOCOL}://${API_HOST}:${API_PORT}/roltie/predict`, {
+          fetch(`http://145.137.76.138:8087/roltie/predict`, {
             method: "POST",
             headers: {
               Accept: "application/json",

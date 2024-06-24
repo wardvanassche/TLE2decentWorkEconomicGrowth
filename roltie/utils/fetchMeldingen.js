@@ -2,7 +2,7 @@ import { API_PROTOCOL, API_HOST, API_PORT } from "@env";
 
 export default async function fetchMeldingen() {
   try {
-    const apiUrl = `${API_PROTOCOL}://${API_HOST}:${API_PORT}/roltie/station`;
+    const apiUrl = `http://145.137.76.138:8087/roltie/station`;
 
     console.log("API URL:", apiUrl);
 

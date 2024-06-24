@@ -82,5 +82,5 @@ const styles = StyleSheet.create({
         color: '#FFFFFF', // Kleur van de tekst
         fontWeight: "bold",
         fontSize: 16, // Grootte van de tekst
-    },
+},
 });
