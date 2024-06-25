@@ -1,77 +1,36 @@
-import React, { useState } from 'react';
-import {StyleSheet} from "react-native";
-export default function Dropdown() {
+// components/dropdown.js
+import React from "react";
+import { View, Text,  StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
-    const [isOpen, setIsOpen] = useState(false);
-
-    const toggleDropdown = () => {
-        setIsOpen(!isOpen);
-    };
-
-    return (
-        <div style={styles.dropdown}>
-            <button onClick={toggleDropdown} style={styles.toggle}>
-                Select an option
-            </button>
-            {isOpen && (
-                <ul style={styles.menu}>
-                    <li style={styles.item}
-                        onMouseOver={e => e.currentTarget.style.backgroundColor = styles.itemHover.backgroundColor}
-                        onMouseOut={e => e.currentTarget.style.backgroundColor = ''}>
-                        <text>Option 1</text>
-                    </li>
-                    <li style={styles.item}
-                        onMouseOver={e => e.currentTarget.style.backgroundColor = styles.itemHover.backgroundColor}
-                        onMouseOut={e => e.currentTarget.style.backgroundColor = ''}>
-                        <text>Option 2</text>
-                    </li>
-                    <li style={styles.item}
-                        onMouseOver={e => e.currentTarget.style.backgroundColor = styles.itemHover.backgroundColor}
-                        onMouseOut={e => e.currentTarget.style.backgroundColor = ''}>
-                        <text>Option 3</text>
-                    </li>
-                </ul>
-    )
-}
-</div>
-)
-}
+const Dropdown = ({ placeholder, selectedValue, onValueChange, options }) => {
+  return (
+    <View style={styles.dropdownContainer}>
+      <Picker
+        selectedValue={selectedValue}
+        onValueChange={onValueChange}
+        style={styles.picker}
+      >
+        <Picker.Item label={placeholder} value="" color="#aaa" />
+        {options.map((option) => (
+          <Picker.Item key={option.value} label={option.label} value={option.value} />
+        ))}
+      </Picker>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    dropdown: {
-        position: 'relative',
-        display: 'inline-block',
-        width: '75%',
-    },
-    toggle: {
-        backgroundColor: 'white',
-        color: 'grey',
-        cursor: 'pointer',
-        fontSize: '16px',
-        border: '1px solid #00C720',
-        borderRadius: '5px',
-        width: '100%',
-        padding: '10px',
-    },
-    menu: {
-        display: 'block',
-        position: 'absolute',
-        backgroundColor: 'white',
-        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-        zIndex: '1',
-        marginTop: '5px',
-        width: '100%',
-        padding: '0',
-        listStyleType: 'none',
-        border: '1px solid #00C720',
-        borderRadius: '5px',
-    },
-    item: {
-        cursor: 'pointer',
-        color: 'grey',
-        padding: '10px',
-    },
-    itemHover: {
-        backgroundColor: '#00C720',
-    },
+  dropdownContainer: {
+    marginBottom: 35, // Increased space between dropdowns
+    borderColor: '#00C720',
+    borderWidth: 1,
+    borderRadius: 4,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+  },
 });
+
+export default Dropdown;

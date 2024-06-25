@@ -57,12 +57,12 @@ const TrainModelsHandler = async (req, res) => {
   try {
     console.log("TrainModelsHandler called...");
     await trainModel();
-    res.status(200).send({ message: "Models trained successfully" });
+    res.status(200).send({ message: "Update geslaagd! Alles is bijgewerkt" });
   } catch (error) {
-    console.error("Error in TrainModelsHandler:", error);
+    console.error("Er is iets foutgegaan!, Error in TrainModelsHandler:", error);
     res
       .status(500)
-      .send({ message: "Error training models", error: error.message });
+      .send({ message: "Er is iets foutgegaan!, Error training models", error: error.message });
   }
 };
 
