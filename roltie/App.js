@@ -6,7 +6,6 @@ import fetchMeldingen from "./utils/fetchMeldingen.js";
 import HomeScreen from "./screens/HomeScreen.js";
 import Notifications from "./screens/Notifications.js";
 import Settings from "./screens/Settings.js";
-import MeldingScreen from "./screens/MeldingScreen";
 
 const Stack = createStackNavigator();
 

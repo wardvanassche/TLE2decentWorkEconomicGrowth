@@ -72,40 +72,11 @@ export default function HomeScreen({ navigation }) {
   }, [showList]);
 
   const stationNames = {
-    beurs: "beurs",
-    "beurss": "beurs",
-    "beur": "beurs",
-    "beurs station": "beurs",
-    "bears": "beurs",
-    "beurrs": "beurs",
-    wilhelminaplein: "wilhelminaplein",
-    "wilheminaplein": "wilhelminaplein",
-    "wilhelminaplin": "wilhelminaplein",
-    "wilhelminplei": "wilhelminaplein",
-    "wilhelminplein": "wilhelminaplein",
-    "wilhelminplein": "wilhelminaplein",
-    "wilhelminaplein station": "wilhelminaplein",
-    "wilheminaplen": "wilhelminaplein",
-    "wilheminplin": "wilhelminaplein",
-    "wilhelminplin": "wilhelminaplein",
-    "wilhelplin": "wilhelminaplein",
-    "wilhelmple": "wilhelminaplein",
-    "kralingse zoom": "kralingse zoom",
-    "kralinse zoom": "kralingse zoom",
-    "kralinge zoom": "kralingse zoom",
-    "kralingse zom": "kralingse zoom",
-    "kraling zoom": "kralingse zoom",
-    "kralingsezoom": "kralingse zoom",
-    "kralingse zoom station": "kralingse zoom",
-    "kraligse zoom": "kralingse zoom",
-    "kraligse zom": "kralingse zoom",
-    "kralingz zoom": "kralingse zoom",
-    "kralingsezoom": "kralingse zoom",
-    "kraliingse zoom": "kralingse zoom"
+
   };
 
   const correctStationName = (name) => {
-    return stationNames[name.toLowerCase()] || name.toLowerCase();
+    return stationNames;
   };
 
   const handlePress = async () => {
@@ -117,7 +88,7 @@ export default function HomeScreen({ navigation }) {
     setShowLoader(true);
 
     try {
-      const response = await fetch(`http://145.137.76.138:8087/roltie/station`, {
+      const response = await fetch(`http://145.137.71.30:8087/roltie/station`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -202,13 +173,13 @@ export default function HomeScreen({ navigation }) {
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="handled"
       >
-        {showLogo && (
-          <Image
-            source={require("../assets/logo.png")}
-            style={styles.logo}
-            onPress={() => navigation.navigate("Home")}
-          />
-        )}
+        {/* {showLogo && ( */}
+        <Image
+          source={require("../assets/logo.png")}
+          style={styles.logo}
+          onPress={() => navigation.navigate("Home")}
+        />
+        {/* )} */}
         <Animated.View
           style={[
             styles.rectangle,
@@ -218,20 +189,25 @@ export default function HomeScreen({ navigation }) {
             },
           ]}
         >
-          <TouchableOpacity
-            style={styles.settingsButton}
-            onPress={() => navigation.navigate("Settings")}
-          >
-            <View style={styles.dotContainer}>
-              <View style={styles.dot} />
-              <View style={styles.dot} />
-              <View style={styles.dot} />
-            </View>
-          </TouchableOpacity>
+          {showLogo && (
+            <TouchableOpacity
+              style={styles.settingsButton}
+              onPress={() => navigation.navigate("Settings")}
+            >
+              <View style={styles.dotContainer}>
+                <View style={styles.dot} />
+                <View style={styles.dot} />
+                <View style={styles.dot} />
+              </View>
+            </TouchableOpacity>
+          )}
           <View
             style={[
               styles.inputContainer,
-              { backgroundColor: inputBackgroundColor },
+              {
+                backgroundColor: inputBackgroundColor,
+                marginTop: showLogo ? -20 : -70,
+              },
             ]}
           >
             <View style={styles.backgroundImageContainer}>
@@ -251,7 +227,9 @@ export default function HomeScreen({ navigation }) {
                     color: inputTextColor,
                   },
                 ]}
-                onChangeText={(text) => setStartStation(correctStationName(text))}
+                onChangeText={(text) =>
+                  setStartStation(text)
+                }
                 value={startStation}
               />
               <TextInput
@@ -266,7 +244,7 @@ export default function HomeScreen({ navigation }) {
                     color: inputTextColor,
                   },
                 ]}
-                onChangeText={(text) => setEndStation(correctStationName(text))}
+                onChangeText={(text) => setEndStation(text)}
                 value={endStation}
               />
             </View>
@@ -290,6 +268,7 @@ export default function HomeScreen({ navigation }) {
                 {
                   transform: [{ translateY: backgroundTranslateYAnim }],
                   backgroundColor: showListBackground ? "#FFFFFF" : "#EAEAEA",
+                  marginTop: showLogo ? 100 : -100,
                 },
               ]}
             >
@@ -327,7 +306,7 @@ export default function HomeScreen({ navigation }) {
               {showCheckmark && (
                 <View style={styles.checkmarkContainer}>
                   <Image
-                    source={require('../assets/check groen.png')}
+                    source={require("../assets/check groen.png")}
                     style={styles.checkmark}
                   />
                   <Text style={styles.checkmarkText}>Alles Rolt</Text>

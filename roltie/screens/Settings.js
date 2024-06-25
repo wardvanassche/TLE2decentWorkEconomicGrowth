@@ -52,7 +52,7 @@ export default function Settings() {
     try {
       const responses = await Promise.all(
         escalatorIds.map((id) =>
-          fetch(`http://145.137.76.138:8087/roltie/predict`, {
+          fetch(`http://145.137.71.30:8087/roltie/predict`, {
             method: "POST",
             headers: {
               Accept: "application/json",

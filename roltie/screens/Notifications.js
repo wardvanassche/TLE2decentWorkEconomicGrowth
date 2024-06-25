@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import Dropdown from "./components/dropdown.js"; // Adjust the path based on your file structure
 
 export default function Notifications() {
@@ -65,7 +66,7 @@ export default function Notifications() {
     console.log("Submitting feedback for Escalator ID:", escalatorId);
     try {
       const response = await fetch(
-        `http://localhost:8087/roltie/meldingen`,
+        `http://145.137.71.30:8087/roltie/meldingen`,
         {
           method: "POST",
           headers: {
