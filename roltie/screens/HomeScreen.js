@@ -14,7 +14,7 @@ import {
   Platform,
 } from "react-native";
 import inputBackground2 from "../assets/inputvelden2.png"; // Import the new image
-// import { API_PROTOCOL, API_HOST, API_PORT } from "@env";
+import GreenArrow from "../assets/inputvelden.png"; // Import the PNG for green arrow (as SVG is removed)
 
 export default function HomeScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
@@ -72,17 +72,16 @@ export default function HomeScreen({ navigation }) {
   }, [showList]);
 
   const stationNames = {
-
+    // Add station names if necessary
   };
 
   const correctStationName = (name) => {
-    return stationNames;
+    return stationNames[name] || name;
   };
 
   const handlePress = async () => {
     if (!startStation || !endStation) {
-      Alert.alert("Error", "Fill in both station names");
-      return;
+      Alert.alert("Error", "Vul beide stationsnamen in")
     }
 
     setShowLoader(true);
@@ -162,6 +161,11 @@ export default function HomeScreen({ navigation }) {
     });
   };
 
+  const switchStations = () => {
+    setStartStation(endStation);
+    setEndStation(startStation);
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -173,13 +177,11 @@ export default function HomeScreen({ navigation }) {
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="handled"
       >
-        {/* {showLogo && ( */}
         <Image
           source={require("../assets/logo.png")}
           style={styles.logo}
           onPress={() => navigation.navigate("Home")}
         />
-        {/* )} */}
         <Animated.View
           style={[
             styles.rectangle,
@@ -216,36 +218,38 @@ export default function HomeScreen({ navigation }) {
                 style={[styles.backgroundImage, { opacity: imageOpacityAnim }]}
               />
               <TextInput
-                placeholder="Choose a starting station"
+                placeholder="vanaf welk station begin je?"
                 style={[
                   styles.inputVan,
                   {
                     position: "absolute",
                     top: 10,
                     left: 30,
-                    width: "90%",
+                    width: "80%",
                     color: inputTextColor,
                   },
                 ]}
-                onChangeText={(text) =>
-                  setStartStation(text)
-                }
+                onChangeText={(text) => setStartStation(text)}
                 value={startStation}
               />
               <TextInput
-                placeholder="Choose an end station"
+                placeholder="Kies een eindbestemming"
                 style={[
                   styles.inputNaar,
                   {
                     position: "absolute",
                     top: 60,
                     left: 30,
-                    width: "90%",
+                    width: "80%",
                     color: inputTextColor,
                   },
                 ]}
                 onChangeText={(text) => setEndStation(text)}
                 value={endStation}
+              />
+              <TouchableOpacity
+                style={styles.switchButton}
+                onPress={switchStations}
               />
             </View>
             {!loading && !showList && (
@@ -317,15 +321,23 @@ export default function HomeScreen({ navigation }) {
           {!showList && !loading && (
             <View style={styles.reportContainer}>
               <Text style={styles.reportText}>
-                Elevator or escalator not working?
+                Werkt de lift of roltrap niet?
               </Text>
               <TouchableOpacity
                 style={styles.reportButton}
                 onPress={() => navigation.navigate("Notifications")}
               >
-                <Text style={styles.reportButtonText}>Make a report</Text>
+                <Text style={styles.reportButtonText}>Maak een melding</Text>
               </TouchableOpacity>
             </View>
+          )}
+          {showList && (
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBackPress}
+            >
+              <Text style={styles.backButtonText}>Terug</Text>
+            </TouchableOpacity>
           )}
         </Animated.View>
       </ScrollView>
@@ -451,6 +463,24 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  switchButton: {
+    position: "absolute",
+    top: 50,
+    right: 25,
+    backgroundColor: "transparent",
+    padding: 5,
+    borderRadius: 5,
+    width: 30,
+    height: 40,
+    opacity: 0.1, // Temporarily increase opacity for testing
+  },
+  switchImage: {
+    position: "absolute",
+    top: 50,
+    right: 25,
+    width: 30,
+    height: 40,
   },
   loaderContainer: {
     flex: 1,

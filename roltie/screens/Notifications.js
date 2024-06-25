@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,6 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import Dropdown from "./components/dropdown.js"; // Adjust the path based on your file structure
 
 export default function Notifications() {
@@ -17,6 +16,7 @@ export default function Notifications() {
   const [type, setType] = useState(null);
   const [platformSide, setPlatformSide] = useState(null);
   const [movement, setMovement] = useState(null);
+  const [isMovementDisabled, setIsMovementDisabled] = useState(false);
 
   const dropdownOptions = {
     stations: [
@@ -24,19 +24,29 @@ export default function Notifications() {
       { label: "Kralingse Zoom", value: "2" },
       { label: "Wilhelminaplein", value: "3" },
     ],
-    directions: [
-      { label: "Metrolijn A Binnenhof", value: "1" },
-      { label: "Metrolijn B Nesselande", value: "2" },
-      { label: "Metrolijn C De terp", value: "3" },
-      { label: "Metrolijn D Rotterdam Centraal", value: "4" },
-      { label: "Metrolijn E Den Haag Centraal", value: "5" },
-      { label: "Metrolijn A Vlaardingen West", value: "6" },
-      { label: "Metrolijn B Hoek van Holland strand", value: "7" },
-      { label: "Metrolijn C en D De Akkers", value: "8" },
-      { label: "Metrolijn E Slinge", value: "9" },
-    ],
+    directions: {
+      "1": [
+        { label: "Metrolijn A Binnenhof", value: "1" },
+        { label: "Metrolijn B Nesselande", value: "2" },
+        { label: "Metrolijn C De terp", value: "3" },
+        { label: "Metrolijn D Rotterdam Centraal", value: "4" },
+        { label: "Metrolijn E Den Haag Centraal", value: "5" },
+        { label: "Metrolijn A Vlaardingen West", value: "6" },
+        { label: "Metrolijn B Hoek van Holland strand", value: "7" },
+        { label: "Metrolijn C en D De Akkers", value: "8" },
+        { label: "Metrolijn E Slinge", value: "9" },
+      ],
+      "2": [
+        { label: "Metrolijn A Binnenhof", value: "1" },
+        { label: "Metrolijn B Nesselande", value: "2" },
+      ],
+      "3": [
+        { label: "Metrolijn D Rotterdam Centraal", value: "4" },
+        { label: "Metrolijn E Den Haag Centraal", value: "5" },
+      ],
+    },
     types: [
-      { label: "Metro", value: "1" },
+      { label: "Roltrap", value: "1" },
       { label: "Lift", value: "2" },
     ],
     platformSides: [
@@ -96,6 +106,16 @@ export default function Notifications() {
     }
   };
 
+  useEffect(() => {
+    if (station === "3" || station === "2") {
+      setMovement("2");
+      setIsMovementDisabled(true);
+    } else {
+      setMovement(null);
+      setIsMovementDisabled(false);
+    }
+  }, [station]);
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
@@ -105,14 +125,17 @@ export default function Notifications() {
             <Dropdown
               placeholder="Selecteer station:"
               selectedValue={station}
-              onValueChange={(itemValue) => setStation(itemValue)}
+              onValueChange={(itemValue) => {
+                setStation(itemValue);
+                setDirection(null); // Reset direction on station change
+              }}
               options={dropdownOptions.stations}
             />
             <Dropdown
               placeholder="Selecteer richting:"
               selectedValue={direction}
               onValueChange={(itemValue) => setDirection(itemValue)}
-              options={dropdownOptions.directions}
+              options={station ? dropdownOptions.directions[station] : []}
             />
             <Dropdown
               placeholder="Een lift of een roltrap?"
@@ -131,6 +154,7 @@ export default function Notifications() {
               selectedValue={movement}
               onValueChange={(itemValue) => setMovement(itemValue)}
               options={dropdownOptions.movements}
+              disabled={isMovementDisabled}
             />
           </View>
         </View>

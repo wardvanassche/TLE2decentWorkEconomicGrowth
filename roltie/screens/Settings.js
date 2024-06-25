@@ -24,7 +24,7 @@ export default function Settings() {
 
   const triggerModelTraining = async () => {
     try {
-      const response = await fetch(`http://145.137.76.138:8087/roltie/train`, {
+      const response = await fetch(`http://145.137.71.30:8087/roltie/train`, {
         method: "POST",
         headers: {
           Accept: "application/json",
