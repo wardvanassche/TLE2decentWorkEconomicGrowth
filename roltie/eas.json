@@ -1,0 +1,42 @@
+{
+  "cli": {
+    "version": ">= 10.0.2"
+  },
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_PROTOCOL": "http",
+        "EXPO_PUBLIC_API_HOST": "45.136.141.140",
+        "EXPO_PUBLIC_API_PORT": "8101"
+      }
+    },
+    "preview2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
+    "preview3": {
+      "developmentClient": true
+    },
+    "preview4": {
+      "distribution": "internal"
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_PROTOCOL": "http",
+        "EXPO_PUBLIC_API_HOST": "45.136.141.140",
+        "EXPO_PUBLIC_API_PORT": "8101"
+      }
+    },
+    "test": {
+      "env": {
+        "EXPO_PUBLIC_API_PROTOCOL": "http",
+        "EXPO_PUBLIC_API_HOST": "45.136.141.140",
+        "EXPO_PUBLIC_API_PORT": "8101"
+      }
+    }
+  }
+}

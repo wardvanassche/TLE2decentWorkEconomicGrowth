@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "e4663752-92b8-420b-9556-d6cfd3ba0b88"
+      }
+    },
+    "android": {
+      "package": "com.rayel2002.server"
+    }
+  }
+}

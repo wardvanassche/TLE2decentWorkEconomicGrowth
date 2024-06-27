@@ -11,7 +11,7 @@ import {
   Switch, 
 } from "react-native";
 import { BarChart } from "react-native-chart-kit";
-import { API_PROTOCOL, API_HOST, API_PORT } from "@env";
+import { EXPO_PUBLIC_API_PROTOCOL, EXPO_PUBLIC_API_HOST, EXPO_PUBLIC_API_PORT } from "@env";
 
 export default function Settings() {
   const [escalatorIds] = useState(["1", "2"]); // Example escalator IDs
@@ -24,7 +24,7 @@ export default function Settings() {
 
   const triggerModelTraining = async () => {
     try {
-      const response = await fetch(`http://145.137.71.30:8087/roltie/train`, {
+      const response = await fetch( `${EXPO_PUBLIC_API_PROTOCOL}://${EXPO_PUBLIC_API_HOST}:${EXPO_PUBLIC_API_PORT}/roltie/train`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -52,7 +52,7 @@ export default function Settings() {
     try {
       const responses = await Promise.all(
         escalatorIds.map((id) =>
-          fetch(`http://145.137.71.30:8087/roltie/predict`, {
+          fetch( `${EXPO_PUBLIC_API_PROTOCOL}://${EXPO_PUBLIC_API_HOST}:${EXPO_PUBLIC_API_PORT}/roltie/predict`, {
             method: "POST",
             headers: {
               Accept: "application/json",

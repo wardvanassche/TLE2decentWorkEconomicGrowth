@@ -15,7 +15,8 @@ import {
 } from "react-native";
 import inputBackground2 from "../assets/inputvelden2.png"; // Import the new image
 import GreenArrow from "../assets/inputvelden.png"; // Import the PNG for green arrow (as SVG is removed)
-
+import { EXPO_PUBLIC_API_PROTOCOL, EXPO_PUBLIC_API_HOST, EXPO_PUBLIC_API_PORT } from "@env";
+    hf
 export default function HomeScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [showList, setShowList] = useState(false);
@@ -87,7 +88,7 @@ export default function HomeScreen({ navigation }) {
     setShowLoader(true);
 
     try {
-      const response = await fetch(`http://145.137.71.30:8087/roltie/station`, {
+      const response = await fetch( `${EXPO_PUBLIC_API_PROTOCOL}://${EXPO_PUBLIC_API_HOST}:${EXPO_PUBLIC_API_PORT}/roltie/station`, {
         method: "POST",
         headers: {
           Accept: "application/json",

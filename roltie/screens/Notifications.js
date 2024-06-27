@@ -9,6 +9,7 @@ import {
   Image,
 } from "react-native";
 import Dropdown from "./components/dropdown.js"; // Adjust the path based on your file structure
+import { EXPO_PUBLIC_API_PROTOCOL, EXPO_PUBLIC_API_HOST, EXPO_PUBLIC_API_PORT } from "@env";
 
 export default function Notifications() {
   const [station, setStation] = useState(null);
@@ -76,7 +77,7 @@ export default function Notifications() {
     console.log("Submitting feedback for Escalator ID:", escalatorId);
     try {
       const response = await fetch(
-        `http://145.137.71.30:8087/roltie/meldingen`,
+        `${EXPO_PUBLIC_API_PROTOCOL}://${EXPO_PUBLIC_API_HOST}:${EXPO_PUBLIC_API_PORT}/roltie/meldingen`,
         {
           method: "POST",
           headers: {

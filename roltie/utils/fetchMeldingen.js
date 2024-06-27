@@ -1,8 +1,8 @@
-import { API_PROTOCOL, API_HOST, API_PORT } from "@env";
+import { EXPO_PUBLIC_API_PROTOCOL, EXPO_PUBLIC_API_HOST, EXPO_PUBLIC_API_PORT } from "@env";
 
 export default async function fetchMeldingen() {
   try {
-    const apiUrl = `http://145.137.71.30:8087/roltie/station`;
+    const apiUrl = `${EXPO_PUBLIC_API_PROTOCOL}://${EXPO_PUBLIC_API_HOST}:${EXPO_PUBLIC_API_PORT}/roltie/station`;
 
     console.log("API URL:", apiUrl);
 
